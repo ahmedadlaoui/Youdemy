@@ -1,7 +1,7 @@
 
 .ss{
 
-    background: radial-gradient(circle  , #e6ba88, #422816);
+    background: radial-gradient(circle  , #e6ba88, #6c492f);
     min-height: 615px;
     display: flex;
     justify-content: end;
@@ -74,4 +74,25 @@ span{
 .fake{
     height: 71.2px;
     width: 100%;
+}
+.tt{
+    position: relative;
+}
+.tt::after{
+    content: "";
+    position: absolute;
+    height: 1px;
+    left: 50%;
+    transform:translateX(-50%) ;
+    bottom: 0;
+    background-color: black;
+    transition: 0.3s ease;
+    width: 0%;
+}
+.tt:hover::after{
+    width: 100%;
+}
+.logo{
+    font-size: 28px;
+    font-weight: 700;
 }

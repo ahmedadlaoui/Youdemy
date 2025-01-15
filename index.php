@@ -5,21 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>YouDemy - Learn Your Way</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="index.css?<?php echo time() ?>">
 </head>
 <body class="bg-gradient-to-br from-[#f9f4f0] to-[#d9c5b2] text-[#4b3832]">
 
   <!-- Navbar -->
   <header class='flex shadow-lg py-4 px-4 sm:px-10 bg-white font-[sans-serif] min-h-[70px] tracking-wide relative z-50'>
     <div class='flex flex-wrap items-center justify-between gap-4 w-full'>
-      <a href="javascript:void(0)"
-        class="lg:absolute max-lg:left-10 lg:top-2/4 lg:left-2/4 lg:-translate-x-1/2 lg:-translate-y-1/2 max-sm:hidden"><img
-          src="https://readymadeui.com/readymadeui.svg" alt="logo" class='w-36' />
-      </a>
-      <a href="javascript:void(0)"
-        class="hidden max-sm:block"><img
-          src="https://readymadeui.com/readymadeui-short.svg" alt="logo" class='w-9' />
-      </a>
 
       <div id="collapseMenu"
         class='max-lg:hidden lg:!block max-lg:w-full max-lg:fixed max-lg:before:fixed max-lg:before:bg-black max-lg:before:opacity-50 max-lg:before:inset-0 max-lg:before:z-50'>
@@ -42,18 +34,23 @@
           </li>
           <li class='max-lg:border-b max-lg:py-3 px-3'>
             <a href='javascript:void(0)'
-              class='hover:text-[#007bff] text-[#007bff] block font-semibold text-[15px]'>Home</a>
+              class='tt text-[#333] block font-semibold text-[15px]'>Home</a>
           </li>
           <li class='max-lg:border-b max-lg:py-3 px-3'><a href='javascript:void(0)'
-            class='hover:text-[#007bff] text-[#333] block font-semibold text-[15px]'>Team</a>
+            class='tt text-[#333] block font-semibold text-[15px]'>Team</a>
           </li>
           <li class='max-lg:border-b max-lg:py-3 px-3'><a href='javascript:void(0)'
-            class='hover:text-[#007bff] text-[#333] block font-semibold text-[15px]'>Feature</a>
+            class='tt text-[#333] block font-semibold text-[15px]'>Feature</a>
           </li>
           <li class='max-lg:border-b max-lg:py-3 px-3'><a href='javascript:void(0)'
-            class='hover:text-[#007bff] text-[#333] block font-semibold text-[15px]'>Blog</a>
+            class='tt text-[#333] block font-semibold text-[15px]'>Blog</a>
           </li>
         </ul>
+
+
+
+      <h1 class="logo lg:absolute max-lg:left-10 lg:top-2/4 lg:left-2/4 lg:-translate-x-1/2 lg:-translate-y-1/2 max-sm:hidden">Youdemy</h1>
+
       </div>
 
       <div class='flex items-center ml-auto space-x-6'>
