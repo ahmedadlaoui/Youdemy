@@ -167,6 +167,7 @@ footer{
     grid-template-rows: 1fr;
     column-gap: 8px;
     grid-auto-flow: column;
+    justify-content: start;
 }
 .teacher_stats{
     margin-left: 10px;
@@ -177,4 +178,13 @@ footer{
     padding: 16px;
     display: flex;
     justify-content: space-around;
+}
+.coursestt-container{
+    display: flex;
+    flex-direction: column;
+    position: relative!important;
+    >h1{
+        position: absolute;
+        top: 0;
+    }
 }

@@ -64,5 +64,6 @@ create table courses(
     FOREIGN KEY (Teacher_ID) REFERENCES users(user_id),
     FOREIGN KEY (category_id) REFERENCES category(category_id)
 );
--- @block
-SELECT * FROM tags ;
+-- @block   
+SELECT * FROM courses;
+--@block

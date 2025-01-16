@@ -1,14 +1,29 @@
-<?php 
+<?php
+session_start();
 
- require 'OOP_classes/Course.php';
- require 'OOP_classes/tags.php';
- require 'OOP_classes/category.php';
- 
- $tagsinstance = new tags(null,null);
- $tags = $tagsinstance->fetchalltags();
+require 'OOP_classes/Course.php';
+require 'OOP_classes/tags.php';
+require 'OOP_classes/category.php';
 
- $categoriesinstance = new category(null,null);
- $categories = $categoriesinstance->fetchallcategories();
+$mycourses = course::fetchteachercourses($_SESSION['user_id']);
+
+$tagsinstance = new tags(null, null);
+$tags = $tagsinstance->fetchalltags();
+
+
+$categoriesinstance = new category(null, null);
+$categories = $categoriesinstance->fetchallcategories();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_creation'])) {
+  $tags_to_add = $_POST['tags'];
+  $course_to_create = coursefactory::createcourse_instance($_POST['courseContent'], $_POST['courseTitle'], $_POST['courseDescription'], $_POST['courseCategory'], $_POST['courseBanner'], $_POST['contentType'], $_SESSION['user_id']);
+  $course_to_create->addcourse($tags_to_add);
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit-deletion'])) {
+  course::deletecourse($_POST['course_to_delete']);
+}
+
 
 ?>
 
@@ -25,7 +40,7 @@
 
 <body class="bg-gray-10  min-h-screen">
 
-<header class='flex shadow-lg py-4 px-4 sm:px-10 bg-white font-[sans-serif] min-h-[70px] tracking-wide relative z-50' style="position: relative;">
+  <header class='flex shadow-lg py-4 px-4 sm:px-10 bg-white font-[sans-serif] min-h-[70px] tracking-wide relative z-50' style="position: relative;">
     <div class='flex flex-wrap items-center justify-between gap-4 w-full'>
 
       <div id="collapseMenu"
@@ -89,24 +104,25 @@
   </header>
   <div class="fake"></div>
   <nav
+    style="height: 100%;"
     class="bg-[#2c251d] shadow-lg h-screen fixed top-71.2px left-0 min-w-[260px] py-6 px-6 font-[sans-serif] flex flex-col overflow-auto">
 
     <div class="flex flex-wrap items-center cursor-pointer">
       <div class="relative">
-        <img src='https://readymadeui.com/profile_2.webp' class="w-12 h-12 rounded-full border-white" />
+        <img src='<?php if(isset($_SESSION['profile_pic'])){echo $_SESSION['profile_pic']; }else{ echo 'images/account_circle_24dp_D1D5DB_FILL1_wght400_GRAD-25_opsz40.png' ;} ?>' class="w-12 h-12 rounded-full border-white" />
         <span class="h-3 w-3 rounded-full bg-green-600 border-2 border-white block absolute bottom-0 right-0"></span>
       </div>
 
       <div class="ml-4">
-        <p class="text-sm text-gray-300">John Doe</p>
-        <p class="text-xs text-gray-400 mt-0.5">D.IN Medicine</p>
+        <p class="text-sm text-gray-300"><?php echo $_SESSION['user_fullname'] ?></p>
+        <p class="text-xs text-gray-400 mt-0.5"><?php echo $_SESSION['email'] ?></p>
       </div>
     </div>
 
 
 
     <ul class="space-y-10 flex-1 mt-4 mb-10" style="padding-top: 40px;border-top:1px solid white;">
-    <li>
+      <li>
         <a href="javascript:void(0)" class="text-gray-300 hover:text-white text-sm flex items-center rounded-md">
           <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4" viewBox="0 0 16 16">
             <path
@@ -138,42 +154,11 @@
           <span>My courses</span>
         </a>
       </li>
+
       <li>
         <a href="javascript:void(0)" class="text-gray-300 hover:text-white text-sm flex items-center rounded-md">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
-            viewBox="0 0 512 512">
-            <path
-              d="M122.39 165.78h244.87c10.49 0 19-8.51 19-19s-8.51-19-19-19H122.39c-10.49 0-19 8.51-19 19s8.51 19 19 19zm164.33 99.44c0-10.49-8.51-19-19-19H122.39c-10.49 0-19 8.51-19 19s8.51 19 19 19h145.33c10.49 0 19-8.51 19-19z"
-              data-original="#000000" />
-            <path
-              d="M486.63 323.71c2.04-22.33 3.41-48.35 3.44-78.68-.06-57.07-4.85-98.86-9.96-129.57-8.94-50.6-54.9-96.56-105.5-105.5C343.9 4.85 302.11.06 245.03 0c-57.07.06-98.87 4.85-129.58 9.96C64.86 18.9 18.9 64.86 9.96 115.46 4.85 146.17.07 187.96 0 245.03c.07 57.07 4.85 98.87 9.96 129.58 8.94 50.6 54.9 96.56 105.5 105.5 30.71 5.11 72.5 9.89 129.58 9.96 30.32-.03 56.34-1.4 78.66-3.44 19.84 15.87 45 25.37 72.38 25.37 64.02 0 115.93-51.9 115.93-115.92 0-27.38-9.5-52.54-25.37-72.37zM245.04 452.07c-45.02-.05-85.3-3.13-123.13-9.41-16.81-3.01-33.84-12.44-47.95-26.55s-23.53-31.13-26.55-47.95c-6.28-37.79-9.35-78.07-9.41-123.13.05-45.04 3.13-85.32 9.41-123.13 3.01-16.81 12.44-33.83 26.55-47.94s31.13-23.53 47.95-26.55C159.72 41.13 200 38.06 245.04 38c45.02.05 85.3 3.13 123.13 9.41 16.81 3.01 33.83 12.44 47.95 26.55 14.11 14.11 23.53 31.13 26.55 47.95 6.28 37.83 9.35 78.1 9.41 123.13-.02 16.9-.48 33.11-1.36 48.79-16.28-8.72-34.88-13.66-54.64-13.66-64.02 0-115.93 51.9-115.93 115.92 0 19.76 4.95 38.35 13.66 54.63-15.68.88-31.89 1.34-48.78 1.35zM396.08 474c-42.97 0-77.93-34.95-77.93-77.92s34.96-77.92 77.93-77.92 77.93 34.95 77.93 77.92S439.05 474 396.08 474z"
-              data-original="#000000" />
-            <path
-              d="M406.28 418.24c-2.42-.4-5.71-.78-10.2-.78s-7.78.38-10.2.78c-3.98.7-7.6 4.32-8.31 8.31-.4 2.42-.78 5.71-.78 10.2s.38 7.78.78 10.2c.7 3.98 4.32 7.6 8.31 8.31 2.42.4 5.71.78 10.2.78s7.78-.38 10.2-.78c3.98-.7 7.6-4.32 8.31-8.31.4-2.42.78-5.71.78-10.2s-.38-7.78-.78-10.2c-.7-3.98-4.32-7.6-8.31-8.31zm-10.21-12.61c10.49 0 19-8.51 19-19v-31.7c0-10.49-8.51-19-19-19s-19 8.51-19 19v31.7c0 10.49 8.51 19 19 19z"
-              data-original="#000000" />
-          </svg>
-          <span>inscriptions</span>
-        </a>
-      </li>
-      <li>
-        <a href="javascript:void(0)" class="text-gray-300 hover:text-white text-sm flex items-center rounded-md">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" stroke='currentColor' class="w-[18px] h-[18px] mr-4"
-            viewBox="0 0 682.667 682.667">
-            <defs>
-              <clipPath id="a" clipPathUnits="userSpaceOnUse">
-                <path d="M0 512h512V0H0Z" data-original="#000000" />
-              </clipPath>
-            </defs>
-            <g clip-path="url(#a)" transform="matrix(1.33 0 0 -1.33 0 682.667)">
-              <path fill="none" stroke-miterlimit="10" stroke-width="40"
-                d="M452 444H60c-22.091 0-40-17.909-40-40v-39.446l212.127-157.782c14.17-10.54 33.576-10.54 47.746 0L492 364.554V404c0 22.091-17.909 40-40 40Z"
-                data-original="#000000" />
-              <path
-                d="M472 274.9V107.999c0-11.027-8.972-20-20-20H60c-11.028 0-20 8.973-20 20V274.9L0 304.652V107.999c0-33.084 26.916-60 60-60h392c33.084 0 60 26.916 60 60v196.653Z"
-                data-original="#000000" />
-            </g>
-          </svg>
-          <span>Inbox</span>
+          <img src="images/settings_24dp_D1D5DB_FILL0_wght400_GRAD0_opsz24.svg" alt="" class="w-[20px] h-[20px] mr-4">
+          <span>Settings</span>
         </a>
       </li>
     </ul>
@@ -197,229 +182,224 @@
   <!-- top-[calc(71.2px+calc(100vh-71.2px))] -->
   <!-- top-[calc(71.2px+calc(100vh-71.2px+456px))] -->
 
-  <div 
-  class="absolute top-[calc(71.2px+282px)] left-[260px] bg-white rounded-lg p-8" 
-  style="height:max-content; width: calc(100vw - 260px - 40px); margin-left: 10px; border:1px solid gray;">
-  <h1 class="text-3xl font-extrabold text-gray-800 mb-6">Create Your Course</h1>
-  <form class="space-y-6" method="POST" action="your_form_processing_script.php">
-    <!-- Course Title -->
-    <div>
-      <label for="courseTitle" class="block text-sm font-medium text-gray-800">Course Title</label>
-      <input 
-        type="text" 
-        id="courseTitle" 
-        name="courseTitle" 
-        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800" 
-        placeholder="Enter the course title">
-    </div>
-
-    <!-- Course Description -->
-    <div>
-      <label for="courseDescription" class="block text-sm font-medium text-gray-800">Description</label>
-      <textarea 
-        style="resize: none;"
-        id="courseDescription" 
-        name="courseDescription" 
-        rows="4" 
-        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800" 
-        placeholder="Enter the course description"></textarea>
-    </div>
-
-    <div class="flex space-x-4">
-
-      <div class="flex-1">
-        <label for="contentType" class="block text-sm font-medium text-gray-800">Content Type</label>
-        <select 
-          id="contentType" 
-          name="contentType" 
-          class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800">
-          <option value="" selected disabled>Select Content Type</option>
-          <option value="video">Video</option>
-          <option value="text">Text</option>
-        </select>
+  <div
+    class="absolute top-[calc(71.2px+282px)] left-[260px] bg-white rounded-lg p-8"
+    style="height:max-content; width: calc(100vw - 260px - 40px); margin-left: 10px; border:1px solid gray;">
+    <h1 class="text-3xl font-extrabold text-gray-800 mb-6">Create Your Course</h1>
+    <form class="space-y-6" method="POST" action="teacher_dashboard.php">
+      <!-- Course Title -->
+      <div>
+        <label for="courseTitle" class="block text-sm font-medium text-gray-800">Course Title</label>
+        <input
+          type="text"
+          id="courseTitle"
+          name="courseTitle"
+          class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800"
+          placeholder="Enter the course title">
       </div>
 
-      <!-- Category -->
-      <div class="flex-1">
-        <label for="courseCategory" class="block text-sm font-medium text-gray-800">Category</label>
-        <select 
-          id="courseCategory" 
-          name="courseCategory" 
-          class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800">
-          <option value="" selected disabled>Select a category</option>
-          <!-- <option value="programming">Programming</option>
-          <option value="design">Design</option>
-          <option value="marketing">Marketing</option>
-          <option value="business">Business</option> -->
-
-          <?php
-          foreach($categories as $category):
-          ?>
-          <option value="<?php echo $category['category_id'] ?>"><?php echo $category['category_title'] ?></option>
-          <?php endforeach; ?>
-        </select>
+      <!-- Course Description -->
+      <div>
+        <label for="courseDescription" class="block text-sm font-medium text-gray-800">Description</label>
+        <textarea
+          style="resize: none;"
+          id="courseDescription"
+          name="courseDescription"
+          rows="4"
+          class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800"
+          placeholder="Enter the course description"></textarea>
       </div>
-    </div>
 
-    <!-- Video Path (only if content type is video) -->
-    <div id="videoPathDiv" class="hidden">
-      <label for="videoPath" class="block text-sm font-medium text-gray-800">Video Path</label>
-      <input 
-        type="text" 
-        id="videoPath" 
-        name="videoPath" 
-        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800" 
-        placeholder="Enter the video path">
-    </div>
+      <div class="flex space-x-4">
 
-    <!-- Course Banner -->
-    <div>
-      <label for="courseBanner" class="block text-sm font-medium text-gray-800">Course Banner</label>
-      <input 
-        type="text" 
-        id="courseBanner" 
-        name="courseBanner" 
-        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800" 
-        placeholder="Enter the course banner path">
-    </div>
-
-    <!-- Content (Text Area) -->
-    <div>
-      <label for="courseContent" class="block text-sm font-medium text-gray-800">Course Content</label>
-      <textarea 
-        style="resize: none;"
-        id="courseContent" 
-        name="courseContent" 
-        rows="6" 
-        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800" 
-        placeholder="Enter the course content here"></textarea>
-    </div>
-
-
-    <div>
-      <label for="tags" class="block text-sm font-medium text-gray-800">Tags (hold ctrl & click)</label>
-      <select 
-        id="tags" 
-        name="tags[]" 
-        multiple 
-        class="mt-1 block w-full px-4 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800" style="height: 140px;">
-        <?php
-          foreach($tags as $tag):
-        ?>
-         <option value="<?php echo $tag['tag_id'] ?>"># <?php echo $tag['tag_title'] ?></option>
-         <?php 
-         endforeach;
-         ?>
-      </select>
-    </div>
-
-    <button 
-      type="submit" 
-      class="w-50 bg-[#6c492f] text-white py-2 px-4 rounded-md ">
-      Add Course
-    </button>
-  </form>
-</div>
-
-
-
-
-
-
-
-
-
-  <div class="teacher_courses absolute top-[calc(71.2px+232px+950px)] left-[260px]  overflow-x-auto mt-8" style="border:1px solid gray;">
-
-  <div class="card">
-        <img src="https://media.licdn.com/dms/image/v2/D4D22AQEXseFqRCzbxA/feedshare-shrink_2048_1536/feedshare-shrink_2048_1536/0/1695607566242?e=2147483647&v=beta&t=GOPbr-fGpY6ep4-qycqnfo9QjoCCkPC-T7rb7jEGkjQ" alt="">
-        <h2>The ultimate Webdev course</h2>
-        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sit, natus?</p>
-        <div class="btn-rating">
-          <button class="start-button" style="background-color:rgb(254, 52, 52);">Delete</button>
-
-
-          <div class="flex items-center">
-            <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-            </svg>
-            <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-            </svg>
-            <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-            </svg>
-            <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-            </svg>
-            <svg class="w-4 h-4 text-gray-300 me-1 dark:text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-            </svg>
-            <p class="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">4.95</p>
-            <p class="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">out of</p>
-            <p class="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">5</p>
-          </div>
+        <div class="flex-1">
+          <label for="contentType" class="block text-sm font-medium text-gray-800">Content Type</label>
+          <select
+            id="contentType"
+            name="contentType"
+            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800">
+            <option value="" selected disabled>Select Content Type</option>
+            <option value="video">Video</option>
+            <option value="text">Text</option>
+          </select>
         </div>
 
-
+        <!-- Category -->
+        <div class="flex-1">
+          <label for="courseCategory" class="block text-sm font-medium text-gray-800">Category</label>
+          <select
+            id="courseCategory"
+            name="courseCategory"
+            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800">
+            <option value="" selected disabled>Select a category</option>
+            <?php
+            foreach ($categories as $category):
+            ?>
+              <option value="<?php echo $category['category_id'] ?>"><?php echo $category['category_title'] ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
       </div>
-      
+
+
+      <!-- Course Banner -->
+      <div>
+        <label for="courseBanner" class="block text-sm font-medium text-gray-800">Course Banner</label>
+        <input
+          type="text"
+          id="courseBanner"
+          name="courseBanner"
+          class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800"
+          placeholder="Enter the course banner path">
+      </div>
+
+      <!-- Content (Text Area) -->
+      <div>
+        <label for="courseContent" class="block text-sm font-medium text-gray-800">Course Content</label>
+        <textarea
+          style="resize: none;"
+          id="courseContent"
+          name="courseContent"
+          rows="6"
+          class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800"
+          placeholder="Enter the course content here"></textarea>
+      </div>
+
+
+      <div>
+        <label for="tags" class="block text-sm font-medium text-gray-800">Tags (hold ctrl & click)</label>
+        <select
+          id="tags"
+          name="tags[]"
+          multiple
+          class="mt-1 block w-full px-4 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800" style="height: 140px;">
+          <?php
+          foreach ($tags as $tag):
+          ?>
+            <option value="<?php echo $tag['tag_id'] ?>"># <?php echo $tag['tag_title'] ?></option>
+          <?php
+          endforeach;
+          ?>
+        </select>
+      </div>
+
+      <button
+        type="submit"
+        name="submit_creation"
+        class="w-50 bg-[#6c492f] text-white py-2 px-4 rounded-md ">
+        Add Course
+      </button>
+    </form>
+  </div>
+
+  <div class="coursestt-container top-[calc(71.2px+232px+880px)] left-[260px]">
+    <div class="teacher_courses  overflow-x-auto mt-8" style="border:1px solid gray;">
+
+
+      <?php
+      foreach ($mycourses as $mycourse):
+      ?>
+
+        <div class="card">
+          <img src="<?php echo $mycourse['course_banner'] ?>" alt="">
+          <h2><?php echo $mycourse['course_title'] ?></h2>
+          <p><?php echo $mycourse['course_description'] ?></p>
+          <div class="btn-rating">
+            <form action="teacher_dashboard.php" method="POST">
+              <input type="hidden" name="course_to_delete" value="<?php echo $mycourse['course_id'] ?>">
+              <button name="submit-deletion" type="submit" class="start-button" style="background-color:rgb(254, 52, 52);">Delete</button>
+            </form>
+
+
+
+            <div class="flex items-center">
+              <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+              </svg>
+              <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+              </svg>
+              <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+              </svg>
+              <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+              </svg>
+              <svg class="w-4 h-4 text-gray-300 me-1 dark:text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+              </svg>
+              <p class="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">4.95</p>
+              <p class="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">out of</p>
+              <p class="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">5</p>
+            </div>
+          </div>
+
+
+        </div>
+
+      <?php
+      endforeach;
+      ?>
+
+    </div>
+
 
   </div>
+
 
   <div class="teacher_stats absolute top-[71.2px] left-[260px]  overflow-x-auto mt-8" style="border:1px solid gray;">
 
 
-  <div class="container mx-auto pr-4">
-    <div style="border-radius: 4px!important;" class="w-72 bg-white max-w-xs mx-auto rounded-sm overflow-hidden shadow-lg  transition duration-500 transform hover:scale-100 cursor-pointer">
-      <div class="h-20 bg-[#6c492f] flex items-center justify-between">
-        <p class="mr-0 text-white text-lg pl-5">BT SUBSCRIBERS</p>
+    <div class="container mx-auto pr-4">
+      <div style="border-radius: 4px!important;" class="w-72 bg-white max-w-xs mx-auto rounded-sm overflow-hidden shadow-lg  transition duration-500 transform hover:scale-100 cursor-pointer">
+        <div class="h-20 bg-[#6c492f] flex items-center justify-between">
+          <p class="mr-0 text-white text-lg pl-5">My courses</p>
+        </div>
+        <div class="flex justify-between px-5 pt-6 mb-2 text-sm text-gray-600">
+          <p>TOTAL</p>
+        </div>
+        <p class="py-4 text-3xl ml-5"><?php echo count($mycourses) ?></p>
+        <!-- <hr > -->
       </div>
-      <div class="flex justify-between px-5 pt-6 mb-2 text-sm text-gray-600">
-        <p>TOTAL</p>
-      </div>
-      <p class="py-4 text-3xl ml-5">20,456</p>
-      <!-- <hr > -->
     </div>
-  </div>
 
-  <div class="container mx-auto pr-4">
-    <div style="border-radius: 4px!important;" class="w-72 bg-white max-w-xs mx-auto rounded-sm overflow-hidden shadow-lg  transition duration-500 transform hover:scale-100 cursor-pointer">
-      <div class="h-20 bg-[#6c492f] flex items-center justify-between">
-        <p class="mr-0 text-white text-lg pl-5">Total inscriptions</p>
+    <div class="container mx-auto pr-4">
+      <div style="border-radius: 4px!important;" class="w-72 bg-white max-w-xs mx-auto rounded-sm overflow-hidden shadow-lg  transition duration-500 transform hover:scale-100 cursor-pointer">
+        <div class="h-20 bg-[#6c492f] flex items-center justify-between">
+          <p class="mr-0 text-white text-lg pl-5">Inscriptions</p>
+        </div>
+        <div class="flex justify-between px-5 pt-6 mb-2 text-sm text-gray-600">
+          <p>TOTAL</p>
+        </div>
+        <p class="py-4 text-3xl ml-5">19,694</p>
+        <!-- <hr > -->
       </div>
-      <div class="flex justify-between px-5 pt-6 mb-2 text-sm text-gray-600">
-        <p>TOTAL</p>
-      </div>
-      <p class="py-4 text-3xl ml-5">19,694</p>
-      <!-- <hr > -->
     </div>
-  </div>
 
-  <div style="border-radius: 4px!important;" class="container mx-auto pr-4">
-    <div style="border-radius: 4px!important;" class="w-72 bg-white max-w-xs mx-auto rounded-sm overflow-hidden shadow-lg  transition duration-500 transform hover:scale-100 cursor-pointer">
-      <div class="h-20 bg-[#6c492f] flex items-center justify-between">
-        <p class="mr-0 text-white text-lg pl-5">BT OPT OUTS</p>
+    <div style="border-radius: 4px!important;" class="container mx-auto pr-4">
+      <div style="border-radius: 4px!important;" class="w-72 bg-white max-w-xs mx-auto rounded-sm overflow-hidden shadow-lg  transition duration-500 transform hover:scale-100 cursor-pointer">
+        <div class="h-20 bg-[#6c492f] flex items-center justify-between">
+          <p class="mr-0 text-white text-lg pl-5">BT OPT OUTS</p>
+        </div>
+        <div class="flex justify-between pt-6 px-5 mb-2 text-sm text-gray-600">
+          <p>TOTAL</p>
+        </div>
+        <p class="py-4 text-3xl ml-5">711</p>
+        <!-- <hr > -->
       </div>
-      <div class="flex justify-between pt-6 px-5 mb-2 text-sm text-gray-600">
-        <p>TOTAL</p>
-      </div>
-      <p class="py-4 text-3xl ml-5">711</p>
-      <!-- <hr > -->
     </div>
-  </div>
 
-  <div style="border-radius: 4px!important;"   class="container mx-auto">
-    <div style="border-radius: 4px!important;" class="w-72 bg-white max-w-xs mx-auto rounded-sm overflow-hidden shadow-lg transition duration-500 transform hover:scale-100 cursor-pointer">
-      <div class="h-20 bg-[#6c492f] flex items-center justify-between">
-        <p class="mr-0 text-white text-lg pl-5">BT TODAY'S SUBSCRIPTION</p>
+    <div style="border-radius: 4px!important;" class="container mx-auto">
+      <div style="border-radius: 4px!important;" class="w-72 bg-white max-w-xs mx-auto rounded-sm overflow-hidden shadow-lg transition duration-500 transform hover:scale-100 cursor-pointer">
+        <div class="h-20 bg-[#6c492f] flex items-center justify-between">
+          <p class="mr-0 text-white text-lg pl-5">BT TODAY'S SUBSCRIPTION</p>
+        </div>
+        <div class="flex justify-between pt-6 px-5 mb-2 text-sm text-gray-600">
+          <p>TOTAL</p>
+        </div>
+        <p class="py-4 text-3xl ml-5">0</p>
       </div>
-      <div class="flex justify-between pt-6 px-5 mb-2 text-sm text-gray-600">
-        <p>TOTAL</p>
-      </div>
-      <p class="py-4 text-3xl ml-5">0</p>
     </div>
-  </div>
 
 
   </div>
