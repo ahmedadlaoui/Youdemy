@@ -41,7 +41,7 @@ class User
             }
             $stmt->execute();
         } catch (PDOException $e) {
-            echo 'error signing up' . $e->getMessage();
+            die('error signing up') . $e->getMessage();
         }
     }
 
@@ -64,7 +64,7 @@ class User
                 $_SESSION['is_active'] = $user['is_active'];
             }
         } catch (PDOException $e) {
-            echo 'error signing in' . $e->getMessage();
+            die('error signing in') . $e->getMessage();
         }
     }
 }

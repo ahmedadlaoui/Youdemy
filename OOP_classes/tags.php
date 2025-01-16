@@ -5,7 +5,7 @@ require_once 'OOP_classes/database_connection.php';
 class tags
 {
 
-    private  $tag_id;
+    private $tag_id;
     private $tag_title;
     private $conn;
 
@@ -25,6 +25,7 @@ class tags
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
             exit();
         } catch (PDOException $e) {
+            die('error signing up'). $e->getMessage();
         }
     }
 }

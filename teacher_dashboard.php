@@ -2,9 +2,13 @@
 
  require 'OOP_classes/Course.php';
  require 'OOP_classes/tags.php';
+ require 'OOP_classes/category.php';
  
  $tagsinstance = new tags(null,null);
  $tags = $tagsinstance->fetchalltags();
+
+ $categoriesinstance = new category(null,null);
+ $categories = $categoriesinstance->fetchallcategories();
 
 ?>
 
@@ -222,7 +226,7 @@
     </div>
 
     <div class="flex space-x-4">
-      <!-- Content Type -->
+
       <div class="flex-1">
         <label for="contentType" class="block text-sm font-medium text-gray-800">Content Type</label>
         <select 
@@ -242,11 +246,17 @@
           id="courseCategory" 
           name="courseCategory" 
           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800">
-          <option value="">Select a category</option>
-          <option value="programming">Programming</option>
+          <option value="" selected disabled>Select a category</option>
+          <!-- <option value="programming">Programming</option>
           <option value="design">Design</option>
           <option value="marketing">Marketing</option>
-          <option value="business">Business</option>
+          <option value="business">Business</option> -->
+
+          <?php
+          foreach($categories as $category):
+          ?>
+          <option value="<?php echo $category['category_id'] ?>"><?php echo $category['category_title'] ?></option>
+          <?php endforeach; ?>
         </select>
       </div>
     </div>
