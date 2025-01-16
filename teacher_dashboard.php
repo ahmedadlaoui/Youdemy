@@ -109,7 +109,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit-deletion'])) {
 
     <div class="flex flex-wrap items-center cursor-pointer">
       <div class="relative">
-        <img src='<?php if(isset($_SESSION['profile_pic'])){echo $_SESSION['profile_pic']; }else{ echo 'images/account_circle_24dp_D1D5DB_FILL1_wght400_GRAD-25_opsz40.png' ;} ?>' class="w-12 h-12 rounded-full border-white" />
+        <img src='<?php if (isset($_SESSION['profile_pic'])) {
+                    echo $_SESSION['profile_pic'];
+                  } else {
+                    echo 'images/account_circle_24dp_D1D5DB_FILL1_wght400_GRAD-25_opsz40.png';
+                  } ?>' class="w-12 h-12 rounded-full border-white" />
         <span class="h-3 w-3 rounded-full bg-green-600 border-2 border-white block absolute bottom-0 right-0"></span>
       </div>
 
@@ -185,9 +189,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit-deletion'])) {
   <div
     class="absolute top-[calc(71.2px+282px)] left-[260px] bg-white rounded-lg p-8"
     style="height:max-content; width: calc(100vw - 260px - 40px); margin-left: 10px; border:1px solid gray;">
-    <h1 class="text-3xl font-extrabold text-gray-800 mb-6">Create Your Course</h1>
-    <form class="space-y-6" method="POST" action="teacher_dashboard.php">
-      <!-- Course Title -->
+    <h1 class="text-3xl font-extrabold text-gray-800 mb-6"  style="position: relative;display:flex;align-items:center;"><span id="h1hd">Create Your Course</span><button id="editcourse">Edit course</button> </h1>
+    <form class="space-y-6" id="add-form" method="POST" action="teacher_dashboard.php">
+
+
       <div>
         <label for="courseTitle" class="block text-sm font-medium text-gray-800">Course Title</label>
         <input
@@ -198,7 +203,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit-deletion'])) {
           placeholder="Enter the course title">
       </div>
 
-      <!-- Course Description -->
+
       <div>
         <label for="courseDescription" class="block text-sm font-medium text-gray-800">Description</label>
         <textarea
@@ -224,7 +229,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit-deletion'])) {
           </select>
         </div>
 
-        <!-- Category -->
+
         <div class="flex-1">
           <label for="courseCategory" class="block text-sm font-medium text-gray-800">Category</label>
           <select
@@ -242,7 +247,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit-deletion'])) {
       </div>
 
 
-      <!-- Course Banner -->
+
       <div>
         <label for="courseBanner" class="block text-sm font-medium text-gray-800">Course Banner</label>
         <input
@@ -253,7 +258,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit-deletion'])) {
           placeholder="Enter the course banner path">
       </div>
 
-      <!-- Content (Text Area) -->
+
       <div>
         <label for="courseContent" class="block text-sm font-medium text-gray-800">Course Content</label>
         <textarea
@@ -290,6 +295,134 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit-deletion'])) {
         Add Course
       </button>
     </form>
+
+
+    <form class="space-y-6" method="POST" id="edit-form" action="teacher_dashboard.php" style="display:none;">
+
+
+      <div class="flex space-x-4">
+
+        <div class="flex-1">
+          <label for="courseSelect" class="block text-sm font-medium text-gray-800">Select Course to Edit</label>
+          <select
+            id="courseSelect"
+            name="courseToEdit"
+            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800">
+            <option value="" selected disabled>Select a course</option>
+            <option value="1">Introduction to Programming</option>
+            <option value="2">Advanced Web Development</option>
+            <option value="3">Data Science Basics</option>
+            <option value="4">Machine Learning 101</option>
+            <option value="5">UI/UX Design Principles</option>
+          </select>
+        </div>
+
+        <div class="flex-1">
+          <label for="courseTitle" class="block text-sm font-medium text-gray-800">New course Title</label>
+          <input
+            type="text"
+            id="courseTitle"
+            name="newcourseTitle"
+            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800"
+            placeholder="Enter the course title">
+        </div>
+
+      </div>
+
+
+
+      <div>
+        <label for="courseDescription" class="block text-sm font-medium text-gray-800">New description</label>
+        <textarea
+          style="resize: none;"
+          id="courseDescription"
+          name="newcourseDescription"
+          rows="4"
+          class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800"
+          placeholder="Enter the course description"></textarea>
+      </div>
+
+      <div class="flex space-x-4">
+
+        <div class="flex-1">
+          <label for="contentType" class="block text-sm font-medium text-gray-800">Content Type</label>
+          <select
+            id="contentType"
+            name="newcontentType"
+            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800">
+            <option value="" selected disabled>Select Content Type</option>
+            <option value="video">Video</option>
+            <option value="text">Text</option>
+          </select>
+        </div>
+
+
+        <div class="flex-1">
+          <label for="courseCategory" class="block text-sm font-medium text-gray-800">Category</label>
+          <select
+            id="courseCategory"
+            name="newcourseCategory"
+            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800">
+            <option value="" selected disabled>Select a category</option>
+            <?php
+            foreach ($categories as $category):
+            ?>
+              <option value="<?php echo $category['category_id'] ?>"><?php echo $category['category_title'] ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+      </div>
+
+
+
+      <div>
+        <label for="courseBanner" class="block text-sm font-medium text-gray-800">New course Banner</label>
+        <input
+          type="text"
+          id="courseBanner"
+          name="newcourseBanner"
+          class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800"
+          placeholder="Enter the course banner path">
+      </div>
+
+
+      <div>
+        <label for="courseContent" class="block text-sm font-medium text-gray-800">Course Content</label>
+        <textarea
+          style="resize: none;"
+          id="courseContent"
+          name="newcourseContent"
+          rows="6"
+          class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800"
+          placeholder="Enter the course content here"></textarea>
+      </div>
+
+
+      <div>
+        <label for="tags" class="block text-sm font-medium text-gray-800">Tags (hold ctrl & click)</label>
+        <select
+          id="tags"
+          name="newtags[]"
+          multiple
+          class="mt-1 block w-full px-4 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800" style="height: 140px;">
+          <?php
+          foreach ($tags as $tag):
+          ?>
+            <option value="<?php echo $tag['tag_id'] ?>"># <?php echo $tag['tag_title'] ?></option>
+          <?php
+          endforeach;
+          ?>
+        </select>
+      </div>
+
+      <button
+        type="submit"
+        name="submit_edit"
+        class="w-50 bg-[#6c492f] text-white py-2 px-4 rounded-md ">
+        Edit course
+      </button>
+    </form>
+
   </div>
 
   <div class="coursestt-container top-[calc(71.2px+232px+880px)] left-[260px]">
@@ -312,7 +445,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit-deletion'])) {
 
 
 
-            <div class="flex items-center">
+            <div class="strs flex items-center">
               <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
                 <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
               </svg>
@@ -329,8 +462,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit-deletion'])) {
                 <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
               </svg>
               <p class="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">4.95</p>
-              <p class="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">out of</p>
-              <p class="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">5</p>
+
             </div>
           </div>
 
@@ -342,6 +474,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit-deletion'])) {
       ?>
 
     </div>
+
+
 
 
   </div>
@@ -379,12 +513,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit-deletion'])) {
     <div style="border-radius: 4px!important;" class="container mx-auto pr-4">
       <div style="border-radius: 4px!important;" class="w-72 bg-white max-w-xs mx-auto rounded-sm overflow-hidden shadow-lg  transition duration-500 transform hover:scale-100 cursor-pointer">
         <div class="h-20 bg-[#6c492f] flex items-center justify-between">
-          <p class="mr-0 text-white text-lg pl-5">BT OPT OUTS</p>
+          <p class="mr-0 text-white text-lg pl-5">Top courses</p>
         </div>
         <div class="flex justify-between pt-6 px-5 mb-2 text-sm text-gray-600">
-          <p>TOTAL</p>
+          <p>#2 Python</p>
         </div>
-        <p class="py-4 text-3xl ml-5">711</p>
+        <p class="py-4 text-3xl ml-5">#1 javascript</p>
         <!-- <hr > -->
       </div>
     </div>
@@ -404,6 +538,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit-deletion'])) {
 
   </div>
 
+  <script>
+    document.getElementById('editcourse').addEventListener('click', () => {
+      if (document.getElementById('edit-form').style.display === "none") {
+
+        document.getElementById('add-form').style.display = "none"
+        document.getElementById('edit-form').style.display = ""
+        document.getElementById('editcourse').innerText = "Create new Course"
+        document.getElementById('h1hd').textContent = "Edit Your Course"
+      }else{
+
+         document.getElementById('edit-form').style.display = "none"
+        document.getElementById('add-form').style.display = ""
+        document.getElementById('editcourse').innerText = "Edit Course"
+        document.getElementById('h1hd').textContent = "Create New Course"
+      }
+    })
+  </script>
 </body>
 
 </html>
