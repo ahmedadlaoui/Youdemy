@@ -48,7 +48,7 @@ CREATE TABLE users(
 );
 
 --@block
-DESCRIBE courses;
+DESCRIBE tags;
 
 -- @block
 create table courses(
@@ -65,3 +65,4 @@ create table courses(
     FOREIGN KEY (category_id) REFERENCES category(category_id)
 );
 -- @block
+SELECT * FROM tags ;

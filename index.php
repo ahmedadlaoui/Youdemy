@@ -16,7 +16,7 @@ session_start();
 
 <body class="bg-gradient-to-br from-[#f9f4f0] to-[#d9c5b2] text-[#4b3832]">
 
-  <header class='flex shadow-lg py-4 px-4 sm:px-10 bg-white font-[sans-serif] min-h-[70px] tracking-wide relative z-50'>
+  <header class='flex shadow-lg py-4 px-4 sm:px-10 bg-white font-[sans-serif] min-h-[70px] tracking-wide relative z-50' style="position: relative;">
     <div class='flex flex-wrap items-center justify-between gap-4 w-full'>
 
       <div id="collapseMenu"
@@ -32,42 +32,39 @@ session_start();
           </svg>
         </button>
 
+
+        <a href="index.php">
+          <h1 class="logo lg:absolute max-lg:left-10 lg:top-2/4 lg:left-2/4 lg:-translate-x-1/2 lg:-translate-y-1/2 max-sm:hidden" style="left: 100px;">
+            <img src="images/logo.png" alt="" style="width: 70px; scale:1.4;">
+          </h1>
+        </a>
+
         <ul
-          class='lg:flex lg:gap-x-5 max-lg:space-y-3 max-lg:fixed max-lg:bg-white max-lg:w-1/2 max-lg:min-w-[300px] max-lg:top-0 max-lg:left-0 max-lg:p-6 max-lg:h-full max-lg:shadow-md max-lg:overflow-auto z-50'>
-          <li class='mb-6 hidden max-lg:block'>
-            <a href="javascript:void(0)"><img src="https://readymadeui.com/readymadeui.svg" alt="logo" class='w-36' />
-            </a>
+          class='lg:flex lg:gap-x-5 max-lg:space-y-3 max-lg:fixed max-lg:bg-white max-lg:w-1/2 max-lg:min-w-[300px] max-lg:top-0 max-lg:left-0 max-lg:p-6 max-lg:h-full max-lg:shadow-md max-lg:overflow-auto z-50' style="left:100%;transform:translateX(100%);">
+          <li class='max-lg:border-b max-lg:py-3 px-3'>
+            <a href='javascript:void(0)' class='tt text-white block font-semibold text-[15px]'>Home</a>
           </li>
           <li class='max-lg:border-b max-lg:py-3 px-3'>
-            <a href='javascript:void(0)'
-              class='tt text-white block font-semibold text-[15px]'>Home</a>
+            <a href='javascript:void(0)' class='tt text-white block font-semibold text-[15px]'>My courses</a>
           </li>
-          <li class='max-lg:border-b max-lg:py-3 px-3'><a href='javascript:void(0)'
-              class='tt text-white block font-semibold text-[15px]'>My courses</a>
+          <li class='max-lg:border-b max-lg:py-3 px-3'>
+            <a href='javascript:void(0)' class='tt text-white block font-semibold text-[15px]'>Profile</a>
           </li>
-          <li class='max-lg:border-b max-lg:py-3 px-3'><a href='javascript:void(0)'
-              class='tt text-white block font-semibold text-[15px]'>Profile</a>
-          </li>
-          <li class='max-lg:border-b max-lg:py-3 px-3'><a href='javascript:void(0)'
-              class='tt text-white block font-semibold text-[15px]'>Dashboard</a>
+          <li class='max-lg:border-b max-lg:py-3 px-3'>
+            <a href='javascript:void(0)' class='tt text-white block font-semibold text-[15px]'>Dashboard</a>
           </li>
         </ul>
 
-
-  <a href="index.php">
-  <h1 class="logo lg:absolute max-lg:left-10 lg:top-2/4 lg:left-2/4 lg:-translate-x-1/2 lg:-translate-y-1/2 max-sm:hidden"><img src="images/logo.png" alt="" style="width: 70px;scale:1.5;"></h1>
-
-  </a>
 
       </div>
 
       <div class='flex items-center ml-auto space-x-6'>
         <a href="sign-in.php">
-        <button class='font-semibold text-[15px] border-none outline-none'>Login</button>
+          <button class='font-semibold text-[15px] border-none outline-none'>Login</button>
         </a>
         <a href="sign-up.php">
           <button
-            class='px-4 py-2 text-sm  font-bold text-white border-2 border-[#4b3832] bg-[#4b3832] transition-all ease-in-out duration-300 hover:bg-transparent hover:text-[#4b3832] rounded'>Sign
+            class='px-4 py-2 text-sm  font-bold text-white border-2 border-[#4b3832] bg-[#4b3832] transition-all ease-in-out duration-300 hover:bg-transparent rounded'>Sign
             up</button>
         </a>
 
@@ -475,7 +472,7 @@ session_start();
             <a href='javascript:void(0)' class=' text-white text-sm'>Partners</a>
           </li>
           <li>
-            <a href='javascript:void(0)' class= 'text-white text-sm'>Sitemap</a>
+            <a href='javascript:void(0)' class='text-white text-sm'>Sitemap</a>
           </li>
           <li>
             <a href='javascript:void(0)' class=' text-white text-sm'>Contact</a>

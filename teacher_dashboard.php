@@ -1,3 +1,13 @@
+<?php 
+
+ require 'OOP_classes/Course.php';
+ require 'OOP_classes/tags.php';
+ 
+ $tagsinstance = new tags(null,null);
+ $tags = $tagsinstance->fetchalltags();
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,7 +21,7 @@
 
 <body class="bg-gray-10  min-h-screen">
 
-<header class='flex shadow-lg py-4 px-4 sm:px-10 bg-white font-[sans-serif] min-h-[70px] tracking-wide relative z-50'>
+<header class='flex shadow-lg py-4 px-4 sm:px-10 bg-white font-[sans-serif] min-h-[70px] tracking-wide relative z-50' style="position: relative;">
     <div class='flex flex-wrap items-center justify-between gap-4 w-full'>
 
       <div id="collapseMenu"
@@ -27,42 +37,39 @@
           </svg>
         </button>
 
+
+        <a href="index.php">
+          <h1 class="logo lg:absolute max-lg:left-10 lg:top-2/4 lg:left-2/4 lg:-translate-x-1/2 lg:-translate-y-1/2 max-sm:hidden" style="left: 100px;">
+            <img src="images/logo.png" alt="" style="width: 70px; scale:1.4;">
+          </h1>
+        </a>
+
         <ul
-          class='lg:flex lg:gap-x-5 max-lg:space-y-3 max-lg:fixed max-lg:bg-white max-lg:w-1/2 max-lg:min-w-[300px] max-lg:top-0 max-lg:left-0 max-lg:p-6 max-lg:h-full max-lg:shadow-md max-lg:overflow-auto z-50'>
-          <li class='mb-6 hidden max-lg:block'>
-            <a href="javascript:void(0)"><img src="https://readymadeui.com/readymadeui.svg" alt="logo" class='w-36' />
-            </a>
+          class='lg:flex lg:gap-x-5 max-lg:space-y-3 max-lg:fixed max-lg:bg-white max-lg:w-1/2 max-lg:min-w-[300px] max-lg:top-0 max-lg:left-0 max-lg:p-6 max-lg:h-full max-lg:shadow-md max-lg:overflow-auto z-50' style="left:100%;transform:translateX(100%);">
+          <li class='max-lg:border-b max-lg:py-3 px-3'>
+            <a href='javascript:void(0)' class='tt text-white block font-semibold text-[15px]'>Home</a>
           </li>
           <li class='max-lg:border-b max-lg:py-3 px-3'>
-            <a href='javascript:void(0)'
-              class='tt text-white block font-semibold text-[15px]'>Home</a>
+            <a href='javascript:void(0)' class='tt text-white block font-semibold text-[15px]'>My courses</a>
           </li>
-          <li class='max-lg:border-b max-lg:py-3 px-3'><a href='javascript:void(0)'
-              class='tt text-white block font-semibold text-[15px]'>My courses</a>
+          <li class='max-lg:border-b max-lg:py-3 px-3'>
+            <a href='javascript:void(0)' class='tt text-white block font-semibold text-[15px]'>Profile</a>
           </li>
-          <li class='max-lg:border-b max-lg:py-3 px-3'><a href='javascript:void(0)'
-              class='tt text-white block font-semibold text-[15px]'>Profile</a>
-          </li>
-          <li class='max-lg:border-b max-lg:py-3 px-3'><a href='javascript:void(0)'
-              class='tt text-white block font-semibold text-[15px]'>Dashboard</a>
+          <li class='max-lg:border-b max-lg:py-3 px-3'>
+            <a href='javascript:void(0)' class='tt text-white block font-semibold text-[15px]'>Dashboard</a>
           </li>
         </ul>
 
-
-  <a href="index.php">
-  <h1 class="logo lg:absolute max-lg:left-10 lg:top-2/4 lg:left-2/4 lg:-translate-x-1/2 lg:-translate-y-1/2 max-sm:hidden"><img src="images/logo.png" alt="" style="width: 70px;scale:1.5;"></h1>
-
-  </a>
 
       </div>
 
       <div class='flex items-center ml-auto space-x-6'>
         <a href="sign-in.php">
-        <button class='font-semibold text-[15px] border-none outline-none'>Login</button>
+          <button class='font-semibold text-[15px] border-none outline-none'>Login</button>
         </a>
         <a href="sign-up.php">
           <button
-            class='px-4 py-2 text-sm  font-bold text-white border-2 border-[#4b3832] bg-[#4b3832] transition-all ease-in-out duration-300  rounded'>Sign
+            class='px-4 py-2 text-sm  font-bold text-white border-2 border-[#4b3832] bg-[#4b3832] transition-all ease-in-out duration-300 hover:bg-transparent rounded'>Sign
             up</button>
         </a>
 
@@ -78,7 +85,7 @@
   </header>
   <div class="fake"></div>
   <nav
-    class="bg-[#19191a] shadow-lg h-screen fixed top-71.2px left-0 min-w-[260px] py-6 px-6 font-[sans-serif] flex flex-col overflow-auto">
+    class="bg-[#2c251d] shadow-lg h-screen fixed top-71.2px left-0 min-w-[260px] py-6 px-6 font-[sans-serif] flex flex-col overflow-auto">
 
     <div class="flex flex-wrap items-center cursor-pointer">
       <div class="relative">
@@ -92,16 +99,9 @@
       </div>
     </div>
 
-    <div class="relative bg-[#1f1f22] px-4 py-3 rounded-md my-8">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 mr-3 inline fill-gray-300" viewBox="0 0 118.783 118.783">
-        <path
-          d="M115.97 101.597 88.661 74.286a47.75 47.75 0 0 0 7.333-25.488c0-26.509-21.49-47.996-47.998-47.996S0 22.289 0 48.798c0 26.51 21.487 47.995 47.996 47.995a47.776 47.776 0 0 0 27.414-8.605l26.984 26.986a9.574 9.574 0 0 0 6.788 2.806 9.58 9.58 0 0 0 6.791-2.806 9.602 9.602 0 0 0-.003-13.577zM47.996 81.243c-17.917 0-32.443-14.525-32.443-32.443s14.526-32.444 32.443-32.444c17.918 0 32.443 14.526 32.443 32.444S65.914 81.243 47.996 81.243z"
-          data-original="#000000" />
-      </svg>
-      <input class="text-sm text-gray-300 outline-none bg-transparent px-1 max-w-[130px]" placeholder="Search..." />
-    </div>
 
-    <ul class="space-y-10 flex-1 mt-4 mb-10">
+
+    <ul class="space-y-10 flex-1 mt-4 mb-10" style="padding-top: 40px;border-top:1px solid white;">
     <li>
         <a href="javascript:void(0)" class="text-gray-300 hover:text-white text-sm flex items-center rounded-md">
           <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4" viewBox="0 0 16 16">
@@ -229,7 +229,7 @@
           id="contentType" 
           name="contentType" 
           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800">
-          <option value="">Select Content Type</option>
+          <option value="" selected disabled>Select Content Type</option>
           <option value="video">Video</option>
           <option value="text">Text</option>
         </select>
@@ -292,25 +292,14 @@
         id="tags" 
         name="tags[]" 
         multiple 
-        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800">
-        <!-- Temporary tags -->
-        <option value="1">#Programming</option>
-        <option value="2">#Design</option>
-        <option value="3">#Marketing</option>
-        <option value="4">#Business</option>
-        <option value="1">#Programming</option>
-        <option value="2">#Design</option>
-        <option value="3">#Marketing</option>
-        <option value="4">#Business</option>
-        <option value="1">#Programming</option>
-        <option value="2">#Design</option>
-        <option value="3">#Marketing</option>
-        <option value="4">#Business</option>
-        <option value="1">#Programming</option>
-        <option value="2">#Design</option>
-        <option value="3">#Marketing</option>
-        <option value="4">#Business</option>
-
+        class="mt-1 block w-full px-4 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800" style="height: 140px;">
+        <?php
+          foreach($tags as $tag):
+        ?>
+         <option value="<?php echo $tag['tag_id'] ?>"># <?php echo $tag['tag_title'] ?></option>
+         <?php 
+         endforeach;
+         ?>
       </select>
     </div>
 
@@ -330,7 +319,7 @@
 
 
 
-  <div class="teacher_courses absolute top-[calc(71.2px+232px+900px)] left-[260px]  overflow-x-auto mt-8" style="border:1px solid gray;">
+  <div class="teacher_courses absolute top-[calc(71.2px+232px+950px)] left-[260px]  overflow-x-auto mt-8" style="border:1px solid gray;">
 
   <div class="card">
         <img src="https://media.licdn.com/dms/image/v2/D4D22AQEXseFqRCzbxA/feedshare-shrink_2048_1536/feedshare-shrink_2048_1536/0/1695607566242?e=2147483647&v=beta&t=GOPbr-fGpY6ep4-qycqnfo9QjoCCkPC-T7rb7jEGkjQ" alt="">
@@ -387,7 +376,7 @@
   <div class="container mx-auto pr-4">
     <div style="border-radius: 4px!important;" class="w-72 bg-white max-w-xs mx-auto rounded-sm overflow-hidden shadow-lg  transition duration-500 transform hover:scale-100 cursor-pointer">
       <div class="h-20 bg-[#6c492f] flex items-center justify-between">
-        <p class="mr-0 text-white text-lg pl-5">BT ACTIVE SUBSCRIBERS</p>
+        <p class="mr-0 text-white text-lg pl-5">Total inscriptions</p>
       </div>
       <div class="flex justify-between px-5 pt-6 mb-2 text-sm text-gray-600">
         <p>TOTAL</p>

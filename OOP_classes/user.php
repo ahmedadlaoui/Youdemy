@@ -109,14 +109,4 @@ class teacher extends User
         $this->is_active = $is_active;
     }
 
-    public function addcourse()
-    {
-        try{
-
-            $stmt=$this->conn->prepare("INSERT INTO courses(course)");
-
-        }catch(PDOException $e){
-            die ('Error adding course') .$e->getMessage();
-        }
-    }
 }
