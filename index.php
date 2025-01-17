@@ -1,6 +1,10 @@
 <?php
-session_start();
+require 'OOP_classes/user.php';
 require 'OOP_classes/Course.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['log_out-button'])) {
+  User::log_out();
+}
 
 
 $courses = course::fetchallcourses();
@@ -15,7 +19,7 @@ $courses = course::fetchallcourses();
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>YouDemy - Learn Your Way</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="index.css?<?php echo time() ?>">
+  <link rel="stylesheet" href="External_files/index.css?<?php echo time() ?>">
 </head>
 
 <body class="bg-gradient-to-br from-[#f9f4f0] to-[#d9c5b2] text-[#4b3832]">
@@ -25,40 +29,72 @@ $courses = course::fetchallcourses();
 
 
 
-        <a href="index.php">
-          <h1 class="logo lg:absolute max-lg:left-10 lg:top-2/4 lg:left-2/4 lg:-translate-x-1/2 lg:-translate-y-1/2 max-sm:hidden" style="left: 100px;">
-            <img src="images/logo.png" alt="" style="width: 70px; scale:1.4;">
-          </h1>
-        </a>
+      <a href="index.php">
+        <h1 class="logo lg:absolute max-lg:left-10 lg:top-2/4 lg:left-2/4 lg:-translate-x-1/2 lg:-translate-y-1/2 max-sm:hidden" style="left: 100px;">
+          <img src="images/logo.png" alt="" style="width: 70px; scale:1.4;">
+        </h1>
+      </a>
 
-        <ul
-           style="position:absolute;left:50%;transform:translateX(-50%);display:flex;">
+      <ul
+        style="position:absolute;left:50%;transform:translateX(-50%);display:flex;">
+
+        <?php
+        if (isset($_SESSION['role']) && $_SESSION['role'] === 'teacher'):
+        ?>
           <li class='max-lg:border-b max-lg:py-3 px-3'>
-            <a href='javascript:void(0)' class='tt text-white block font-semibold text-[15px]'>Home</a>
+            <a href='teacher_dashboard.php' class='tt text-white block font-semibold text-[15px]'>Dashboard</a>
           </li>
-          <li class='max-lg:border-b max-lg:py-3 px-3'>
-            <a href='javascript:void(0)' class='tt text-white block font-semibold text-[15px]'>My courses</a>
-          </li>
-          <li class='max-lg:border-b max-lg:py-3 px-3'>
-            <a href='javascript:void(0)' class='tt text-white block font-semibold text-[15px]'>Profile</a>
-          </li>
-          <li class='max-lg:border-b max-lg:py-3 px-3'>
-            <a href='javascript:void(0)' class='tt text-white block font-semibold text-[15px]'>Dashboard</a>
-          </li>
-        </ul>
+        <?php endif; ?>
+        <li class='max-lg:border-b max-lg:py-3 px-3'>
+          <a href='index.php' class='tt text-white block font-semibold text-[15px]'>Home</a>
+        </li>
+        <?php
+        if (isset($_SESSION['role']) && $_SESSION['role'] === 'student'):
+        ?>
+        <li class='max-lg:border-b max-lg:py-3 px-3'>
+          <a href='library.php' class='tt text-white block font-semibold text-[15px]'>My courses</a>
+        </li>
+        <?php endif; ?>
 
 
-      
+        <?php
+        if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'):
+        ?>
+        <li class='max-lg:border-b max-lg:py-3 px-3'>
+          <a href='admin_dashboard.php' class='tt text-white block font-semibold text-[15px]'>Management</a>
+        </li>
+        <?php endif; ?>
+      </ul>
+
+      </ul>
+
+
+
 
       <div class='flex items-center ml-auto space-x-6'>
-        <a href="sign-in.php">
-          <button class='font-semibold text-[15px] border-none outline-none'>Login</button>
-        </a>
-        <a href="sign-up.php">
-          <button
-            class='px-4 py-2 text-sm  font-bold text-white border-2 border-[#4b3832] bg-[#4b3832] transition-all ease-in-out duration-300 hover:bg-transparent rounded'>Sign
-            up</button>
-        </a>
+        <?php
+        if (isset($_SESSION['user_id'])) {
+          echo '<form method="post">  
+          <button name="log_out-button"
+            class="px-4 py-2 text-sm font-bold text-white border-2 border-[#4b3832] bg-[#4b3832] transition-all ease-in-out duration-300 hover:bg-transparent rounded">
+            Log out
+          </button>
+          </form>';
+        } else {
+          echo '<a href="sign-in.php">
+            <button class="font-semibold text-[15px] border-none outline-none">Login</button>
+          </a>
+          <a href="sign-up.php">
+            <button 
+              class="px-4 py-2 text-sm font-bold text-white border-2 border-[#4b3832] bg-[#4b3832] transition-all ease-in-out duration-300 hover:bg-transparent rounded">
+              Sign up
+            </button>
+          </a>';
+        }
+        ?>
+
+
+
       </div>
     </div>
   </header>
@@ -93,47 +129,47 @@ $courses = course::fetchallcourses();
 
   <section class="courses">
     <div class="grid">
-    
 
-    <?php 
-      foreach($courses as $course):
-    ?>
 
-<div class="card">
-        <img src="<?php echo $course['course_banner'] ?>" alt="">
-        <h2><?php echo  $course['course_title'] ?></h2>
-        <p><?php echo $course['course_description'] ?></p>
-        <div class="btn-rating">
-          <button class="start-button">Start</button>
+      <?php
+      foreach ($courses as $course):
+      ?>
 
-          <div class="strs flex items-center" >
-            <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-            </svg>
-            <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-            </svg>
-            <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-            </svg>
-            <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-            </svg>
-            <svg class="w-4 h-4 text-gray-300 me-1 dark:text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-            </svg>
-            <p class="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">4.95</p>
+        <div class="card">
+          <img src="<?php echo $course['course_banner'] ?>" alt="">
+          <h2><?php echo  $course['course_title'] ?></h2>
+          <p><?php echo $course['course_description'] ?></p>
+          <div class="btn-rating">
+            <button class="start-button">Start</button>
 
+            <div class="strs flex items-center">
+              <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+              </svg>
+              <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+              </svg>
+              <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+              </svg>
+              <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+              </svg>
+              <svg class="w-4 h-4 text-gray-300 me-1 dark:text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+              </svg>
+              <p class="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">4.95</p>
+
+            </div>
           </div>
+
+
         </div>
 
+      <?php
+      endforeach;
+      ?>
 
-      </div>
-
-    <?php 
-    endforeach;
-    ?>
-   
   </section>
 
 
@@ -180,7 +216,7 @@ $courses = course::fetchallcourses();
           <img src="images/logo.png" alt="logo" class='w-36' />
         </a>
         <div class="mt-6">
-          <p class="text-white leading-relaxed text-sm">ReadymadeUI is a library of pre-designed UI components built for Tailwind CSS. It offers a collection of versatile, ready-to-use components that streamline the development process by providing a wide range of UI elements.</p>
+          <p class="text-white leading-relaxed text-sm">© 2025 Youdemy. Empowering learners worldwide with accessible and quality education. Explore, learn, and grow with us.</p>
         </div>
         <ul class="mt-10 flex space-x-5">
           <li>
@@ -332,7 +368,7 @@ $courses = course::fetchallcourses();
         </li>
       </ul>
 
-      <p class='text-white text-sm md:ml-auto'>© ReadymadeUI. All rights reserved.</p>
+      <p class='text-white text-sm md:ml-auto'>© Youdemy. All rights reserved.</p>
     </div>
   </footer>
 

@@ -18,7 +18,7 @@ class category
     public function fetchallcategories()
     {
         try {
-            $stmt = $this->conn->prepare("SELECT * FROM category");
+            $stmt =  $this->conn->prepare("SELECT * FROM category");
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
             exit();

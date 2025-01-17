@@ -28,4 +28,13 @@ class tags
             die('error signing up'). $e->getMessage();
         }
     }
+    public static function fetchspecifictags($course_id){
+        $dbconn = database_connection::getinstance();
+        $connection = $dbconn->getconnection();
+
+        $stmt = $connection->prepare("SELECT * FROM assigned_tags WHERE course_id = :course_id");
+        $stmt ->bindParam(':course_id',$course_id);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

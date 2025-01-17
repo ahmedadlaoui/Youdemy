@@ -67,46 +67,79 @@ class User
             die('error signing in') . $e->getMessage();
         }
     }
+    public static function log_out()
+    {
+        session_unset();
+        session_destroy();
+
+        header('location: index.php');
+        exit();
+    }
 }
 
 class admin extends User
-{public function __construct()
+{
+    public function __construct()
     {
         parent::__construct();
     }
 
 
-    public function activateaccount() {
-        
-    }
+    public function activateaccount() {}
 
-    public function suspenduser() {
-        
-    }
+    public function suspenduser() {}
 
-    public function revokesuspension(){
+    public function revokesuspension() {}
 
-    }
+    public function addTag() {}
 
-    public function addTag() {
-        
-    }
-
-    public function addcategory() {
-        
-    }
+    public function addcategory() {}
 }
 
 
 
 class teacher extends User
 {
-
     private $is_active;
 
-    public function __construct($is_active)
+    public function __construct($is_active, $fullname, $email, $password, $role)
     {
         $this->is_active = $is_active;
+        parent::__construct($fullname, $email, $password, $role);
     }
 
+    public function fetch_inscriptions()
+    {
+        try {
+
+            $stmt = $this->conn->prepare("SELECT * FROM library");
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            die('error fetching total inscriptions') . $e->getMessage();
+        }
+    }
+
+    public function top2courses()
+    {
+        try {
+            $stmt = $this->conn->prepare("            SELECT 
+                c.course_title, 
+                COUNT(l.course_id) AS insertion_count
+            FROM 
+                library l
+            JOIN 
+                courses c ON l.course_id = c.course_id
+            GROUP BY 
+                c.course_id
+            ORDER BY 
+                insertion_count DESC
+            LIMIT 2");
+            $stmt->execute();
+            return  $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            die('error getting the top 2 courses') . $e->getMessage();
+            return [];
+        }
+    }
 }

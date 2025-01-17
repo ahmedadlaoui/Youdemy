@@ -11,7 +11,6 @@ create table category(
     category_id int primary key auto_increment,
     category_title varchar(100) not null unique
 );
-
 -- @block
 CREATE TABLE courses_library(
     user_id int not null,
@@ -25,16 +24,14 @@ CREATE TABLE assigned_tags(
     tag_id int not null,
     FOREIGN KEY (course_id) REFERENCES courses(course_id),
     FOREIGN KEY (tag_id) REFERENCES tags(tag_id)
-)
-
--- @block
+) -- @block
 ALTER TABLE users
 MODIFY is_suspended BOOLEAN DEFAULT FALSE;
 ALTER TABLE users
 MODIFY is_active BOOLEAN DEFAULT FALSE;
 -- @block
-
-SELECT * FROM users;
+SELECT *
+FROM users;
 -- @block
 CREATE TABLE users(
     user_id int primary key auto_increment,
@@ -43,13 +40,10 @@ CREATE TABLE users(
     password varchar(200) not null,
     profile_pic varchar(400),
     is_suspended boolean,
-    is_active boolean
-    role ENUM('student', 'admin', 'teacher') NOT NULL
+    is_active boolean role ENUM('student', 'admin', 'teacher') NOT NULL
 );
-
 --@block
 DESCRIBE tags;
-
 -- @block
 create table courses(
     course_id int primary key auto_increment,
@@ -65,5 +59,15 @@ create table courses(
     FOREIGN KEY (category_id) REFERENCES category(category_id)
 );
 -- @block   
-SELECT * FROM courses;
+SELECT *
+FROM users;
 --@block
+create table library(
+    course_id int not null,
+    user_id int not null,
+    FOREIGN KEY (course_id) REFERENCES courses(course_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+)
+
+--@block
+INSERT INTO library(course_id,user_id) VALUES(112,8);

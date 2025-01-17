@@ -145,6 +145,16 @@ header{
     bottom: 8px;
     left: 18px;
 }
+.start-buttonn{
+    background-color: #6c492f;
+    color: white;
+    padding: 6px;
+    width: 60px;
+    border-radius: 4px;
+    position: absolute;
+    bottom: 8px;
+    left: 84px;
+}
 .btn-rating{
     width: 100%;
     display: flex;
@@ -185,9 +195,12 @@ footer{
     background-color: white;
     border-radius: 4px;
     padding: 16px;
-    display: flex;
-    justify-content: space-around;
-}
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+    column-gap: 12px;
+    justify-content: center;
+    }
 .coursestt-container{
     display: flex;
     flex-direction: column;
@@ -197,9 +210,9 @@ footer{
         top: 0;
     }
 }
-#editcourse{
-    position: absolute;
 
+.editcourse{
+    position: absolute;
     right: 32px;
     background-color: #a98061;
     padding: 6px;
