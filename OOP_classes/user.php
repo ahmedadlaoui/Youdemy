@@ -123,7 +123,7 @@ class teacher extends User
     public function top2courses()
     {
         try {
-            $stmt = $this->conn->prepare("            SELECT 
+            $stmt = $this->conn->prepare("SELECT 
                 c.course_title, 
                 COUNT(l.course_id) AS insertion_count
             FROM 
@@ -140,6 +140,24 @@ class teacher extends User
         } catch (PDOException $e) {
             die('error getting the top 2 courses') . $e->getMessage();
             return [];
+        }
+    }
+
+    public function inscriptions_per_course($course_id)
+    {
+        try {
+            $stmt = $this->conn->prepare("SELECT count(*) AS total FROM library WHERE course_id = :courseid");
+            $stmt->bindParam(':courseid',$course_id);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($result && isset($result['total'])) {
+                return $result['total'];
+            } else {
+                return 0;
+            }
+        } catch (PDOException $e) {
+            die('error getting the top 2 courses') . $e->getMessage();
         }
     }
 }

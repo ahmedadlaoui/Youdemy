@@ -20,6 +20,8 @@ $categories = $categoriesinstance->fetchallcategories();
 
 // top2
 $toptwo = $user_instance->top2courses();
+//inscriptions / course
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_creation'])) {
     $tags_to_add = $_POST['tags'];
