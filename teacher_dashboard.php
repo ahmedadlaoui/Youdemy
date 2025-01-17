@@ -190,111 +190,122 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit-deletion'])) {
     class="absolute top-[calc(71.2px+282px)] left-[260px] bg-white rounded-lg p-8"
     style="height:max-content; width: calc(100vw - 260px - 40px); margin-left: 10px; border:1px solid gray;">
     <h1 class="text-3xl font-extrabold text-gray-800 mb-6"  style="position: relative;display:flex;align-items:center;"><span id="h1hd">Create Your Course</span><button id="editcourse">Edit course</button> </h1>
-    <form class="space-y-6" id="add-form" method="POST" action="teacher_dashboard.php">
+    
+    
+    
+    <div style="position: relative;">
+
+    <form class="space-y-6" id="add-form" method="POST" action="teacher_dashboard.php" >
 
 
-      <div>
-        <label for="courseTitle" class="block text-sm font-medium text-gray-800">Course Title</label>
-        <input
-          type="text"
-          id="courseTitle"
-          name="courseTitle"
-          class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800"
-          placeholder="Enter the course title">
+<div>
+  <label for="courseTitle" class="block text-sm font-medium text-gray-800">Course Title</label>
+  <input
+    type="text"
+    id="courseTitle"
+    name="courseTitle"
+    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800"
+    placeholder="Enter the course title">
+</div>
+
+
+<div>
+  <label for="courseDescription" class="block text-sm font-medium text-gray-800">Description</label>
+  <textarea
+    style="resize: none;"
+    id="courseDescription"
+    name="courseDescription"
+    rows="4"
+    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800"
+    placeholder="Enter the course description"></textarea>
+</div>
+
+<div class="flex space-x-4">
+
+  <div class="flex-1">
+    <label for="contentType" class="block text-sm font-medium text-gray-800">Content Type</label>
+    <select
+      id="contentType"
+      name="contentType"
+      class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800">
+      <option value="" selected disabled>Select Content Type</option>
+      <option value="video">Video</option>
+      <option value="text">Text</option>
+    </select>
+  </div>
+
+
+  <div class="flex-1">
+    <label for="courseCategory" class="block text-sm font-medium text-gray-800">Category</label>
+    <select
+      id="courseCategory"
+      name="courseCategory"
+      class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800">
+      <option value="" selected disabled>Select a category</option>
+      <?php
+      foreach ($categories as $category):
+      ?>
+        <option value="<?php echo $category['category_id'] ?>"><?php echo $category['category_title'] ?></option>
+      <?php endforeach; ?>
+    </select>
+  </div>
+</div>
+
+
+
+<div>
+  <label for="courseBanner" class="block text-sm font-medium text-gray-800">Course Banner</label>
+  <input
+    type="text"
+    id="courseBanner"
+    name="courseBanner"
+    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800"
+    placeholder="Enter the course banner path">
+</div>
+
+
+<div>
+  <label for="courseContent" class="block text-sm font-medium text-gray-800">Course Content</label>
+  <textarea
+    style="resize: none;"
+    id="courseContent"
+    name="courseContent"
+    rows="6"
+    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800"
+    placeholder="Enter the course content here"></textarea>
+</div>
+
+
+<div style="display: flex;flex-direction:column;">
+  <label  class="block text-sm font-medium text-gray-800">Tags </label>
+  <div" >
+        <div id="second-form" class="bg-gray-100 border-gray-300 rounded-md py-2 border">
+        <?php
+    foreach ($tags as $tag):
+    ?>
+      <div style="width: 300px;display:flex;justify-content:space-between;align-items:center;">
+        <label style="cursor:pointer;" for="<?php echo $tag['tag_id'] ?>"># <?php echo $tag['tag_title'] ?></label>
+      <input class="h-4 w-4 text-blue-600 border-gray-300 rounded-full focus:ring-blue-500" style="cursor: pointer;" type="checkbox"  name="tags[]" value="<?php echo $tag['tag_id'] ?>" id="<?php echo $tag['tag_id'] ?>">
+
       </div>
-
-
-      <div>
-        <label for="courseDescription" class="block text-sm font-medium text-gray-800">Description</label>
-        <textarea
-          style="resize: none;"
-          id="courseDescription"
-          name="courseDescription"
-          rows="4"
-          class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800"
-          placeholder="Enter the course description"></textarea>
-      </div>
-
-      <div class="flex space-x-4">
-
-        <div class="flex-1">
-          <label for="contentType" class="block text-sm font-medium text-gray-800">Content Type</label>
-          <select
-            id="contentType"
-            name="contentType"
-            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800">
-            <option value="" selected disabled>Select Content Type</option>
-            <option value="video">Video</option>
-            <option value="text">Text</option>
-          </select>
+    <?php
+    endforeach;
+    ?>
         </div>
 
+  </div>
+</div>
 
-        <div class="flex-1">
-          <label for="courseCategory" class="block text-sm font-medium text-gray-800">Category</label>
-          <select
-            id="courseCategory"
-            name="courseCategory"
-            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800">
-            <option value="" selected disabled>Select a category</option>
-            <?php
-            foreach ($categories as $category):
-            ?>
-              <option value="<?php echo $category['category_id'] ?>"><?php echo $category['category_title'] ?></option>
-            <?php endforeach; ?>
-          </select>
-        </div>
-      </div>
+<button
+  type="submit"
+  name="submit_creation"
+  class="w-50 bg-[#6c492f] text-white py-2 px-4 rounded-md ">
+  Add Course
+</button>
+</form>
 
-
-
-      <div>
-        <label for="courseBanner" class="block text-sm font-medium text-gray-800">Course Banner</label>
-        <input
-          type="text"
-          id="courseBanner"
-          name="courseBanner"
-          class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800"
-          placeholder="Enter the course banner path">
-      </div>
-
-
-      <div>
-        <label for="courseContent" class="block text-sm font-medium text-gray-800">Course Content</label>
-        <textarea
-          style="resize: none;"
-          id="courseContent"
-          name="courseContent"
-          rows="6"
-          class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800"
-          placeholder="Enter the course content here"></textarea>
-      </div>
-
-
-      <div>
-        <label for="tags" class="block text-sm font-medium text-gray-800">Tags (hold ctrl & click)</label>
-        <select
-          id="tags"
-          name="tags[]"
-          multiple
-          class="mt-1 block w-full px-4 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-100 text-gray-800" style="height: 140px;">
-          <?php
-          foreach ($tags as $tag):
-          ?>
-            <option value="<?php echo $tag['tag_id'] ?>"># <?php echo $tag['tag_title'] ?></option>
-          <?php
-          endforeach;
-          ?>
-        </select>
-      </div>
-
-      <button
-        type="submit"
-        name="submit_creation"
-        class="w-50 bg-[#6c492f] text-white py-2 px-4 rounded-md ">
-        Add Course
-      </button>
-    </form>
+    </div>
+    
 
 
     <form class="space-y-6" method="POST" id="edit-form" action="teacher_dashboard.php" style="display:none;">
