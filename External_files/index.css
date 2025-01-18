@@ -254,3 +254,8 @@ footer{
     font-weight: 500;
     border-bottom: 1px solid gray;
 }
+#users_table{
+    overflow-y: scroll;
+    overflow-x: hidden;
+    max-height: 600px!important;
+}

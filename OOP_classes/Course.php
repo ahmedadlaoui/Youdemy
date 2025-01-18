@@ -203,7 +203,6 @@ class video_course extends course
             }
 
 
-            // echo "Course added successfully!";
             header('location: teacher_dashboard.php');
             exit();
         } catch (PDOException $e) {
@@ -257,7 +256,6 @@ class video_course extends course
 
 class coursefactory
 {
-
     public static function createcourse_instance($content, $course_title, $course_description, $category_id, $course_banner, $course_type, $teacher_id)
     {
         if ($course_type === 'text') {

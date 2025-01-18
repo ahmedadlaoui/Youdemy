@@ -37,4 +37,20 @@ class tags
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function inserttags(array $tags){
+        try{
+
+            foreach($tags as $tag):
+                $stmt = $this->conn->prepare("INSERT INTO tags(tag_title) VALUE(:title)");
+                $stmt->bindParam(':title',$tag);
+                $stmt->execute();
+            endforeach;
+
+            header('location: admin_dashboard.php');
+            exit();
+        }catch(PDOException $e){
+        die('error inserting tags') . $e->getMessage();
+        }
+    }
 }

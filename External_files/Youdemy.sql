@@ -31,7 +31,7 @@ ALTER TABLE users
 MODIFY is_active BOOLEAN DEFAULT FALSE;
 -- @block
 SELECT *
-FROM users;
+FROM tags;
 -- @block
 CREATE TABLE users(
     user_id int primary key auto_increment,
@@ -43,7 +43,7 @@ CREATE TABLE users(
     is_active boolean role ENUM('student', 'admin', 'teacher') NOT NULL
 );
 --@block
-DESCRIBE tags;
+DESCRIBE users;
 -- @block
 create table courses(
     course_id int primary key auto_increment,

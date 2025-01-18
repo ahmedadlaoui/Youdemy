@@ -19,6 +19,7 @@ $categories = $categoriesinstance->fetchallcategories();
 
 
 // top2
+
 $toptwo = $user_instance->top2courses();
 //inscriptions / course
 

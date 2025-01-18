@@ -75,21 +75,126 @@ class User
         header('location: index.php');
         exit();
     }
+
+    public function fetchusers()
+    {
+        try {
+
+            $stmt = $this->conn->prepare("SELECT * FROM users");
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            die('error fetching users') . $e->getMessage();
+        }
+    }
 }
 
 class admin extends User
 {
-    public function __construct()
+    public function __construct($fullname, $email, $password, $role)
     {
-        parent::__construct();
+        parent::__construct($fullname, $email, $password, $role);
     }
 
 
-    public function activateaccount() {}
+    public function activateaccount($user_id, $user_status)
+    {
 
-    public function suspenduser() {}
+        try {
+            $active = 1;
+            $not_active = 0;
 
-    public function revokesuspension() {}
+
+            if ($user_status === '0') {
+                $stmt = $this->conn->prepare("UPDATE users SET is_active = :is_active WHERE user_id = :userid");
+                $stmt->bindParam(':is_active', $active);
+                $stmt->bindParam(':userid', $user_id);
+                $stmt->execute();
+
+
+
+            } else {
+                $stmt = $this->conn->prepare("UPDATE users SET is_active = :is_active WHERE user_id = :userid");
+                $stmt->bindParam(':is_active', $not_active);
+                $stmt->bindParam(':userid', $user_id);
+                $stmt->execute();
+            }
+
+            
+            header('location: admin_dashboard.php');
+            exit();
+        } catch (PDOException $e) {
+
+            die('error activating account' . $e->getMessage());
+        }
+    }
+
+    public function deleteaccount($user_id)
+    {
+        try {
+            $this->conn->beginTransaction();
+            $stmt = $this->conn->prepare("DELETE FROM library WHERE user_id = :userid");
+            $stmt->bindParam(':userid', $user_id);
+            $stmt->execute();
+
+            $stmt = $this->conn->prepare("DELETE FROM users WHERE user_id = :userid");
+            $stmt->bindParam(':userid', $user_id);
+            $stmt->execute();
+
+            $this->conn->commit();
+
+            header("Location: " . $_SERVER['REQUEST_URI']);
+            exit();
+        } catch (PDOException $e) {
+            $this->conn->rollBack();
+            die('error deleting account' . $e->getMessage());
+        }
+    }
+
+
+
+    public function suspenduser($user_id, $user_status) {
+
+
+        try {
+
+            $banned = 1;
+            $not_banned = 0;
+
+
+            if ($user_status === '0') {
+                $stmt = $this->conn->prepare("UPDATE users SET is_suspended = :is_suspended WHERE user_id = :userid");
+                $stmt->bindParam(':is_suspended', $banned);
+                $stmt->bindParam(':userid', $user_id);
+                $stmt->execute();
+            } else {
+                $stmt = $this->conn->prepare("UPDATE users SET is_suspended = :is_suspended WHERE user_id = :userid");
+                $stmt->bindParam(':is_suspended', $not_banned);
+                $stmt->bindParam(':userid', $user_id);
+                $stmt->execute();
+
+            }
+            
+            header('location: admin_dashboard.php');
+            exit();
+
+        } catch (PDOException $e) {
+            die('error suspending account' . $e->getMessage());
+        }
+    }
+
+    public function topteacher(){
+
+        try{
+
+            $stmt = $this->conn->prepare("SELECT user_fullname,COUNT(l.course_id) AS inscriptions_count FROM users u join courses c on u.user_id = c.Teacher_id join library l on c.course_id = l.course_id group by u.user_id order by inscriptions_count DESC limit 1 ");
+            $stmt->execute();
+             return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        }catch(PDOException $e){
+            die('error fetching top teacher'.$e->getMessage());
+        }
+    }
 
     public function addTag() {}
 
@@ -147,7 +252,7 @@ class teacher extends User
     {
         try {
             $stmt = $this->conn->prepare("SELECT count(*) AS total FROM library WHERE course_id = :courseid");
-            $stmt->bindParam(':courseid',$course_id);
+            $stmt->bindParam(':courseid', $course_id);
             $stmt->execute();
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
 

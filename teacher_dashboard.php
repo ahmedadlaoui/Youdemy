@@ -1,7 +1,7 @@
 <?php
 
 require 'actions.php';
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'teacher') {
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'teacher' ) {
   header('location: index.php');
   exit();
 }
