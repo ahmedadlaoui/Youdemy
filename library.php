@@ -1,38 +1,56 @@
-<?php 
-  require 'OOP_classes/user.php';
-  require 'OOP_classes/Course.php';
-if(!isset($_SESSION['role']) || $_SESSION['role'] !== 'student'){
-    header('location: index.php');
+<?php
+require 'OOP_classes/user.php';
+require 'OOP_classes/Course.php';
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'student') {
+  header('location: index.php');
 }
 
 
-  if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['log_out-button'])) {
-    User::log_out();
+if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['log_out-button'])) {
+  User::log_out();
+}
+$current_page = 1;
+$mycourses = course::fetchstudent_courses($_SESSION['user_id'],$current_page);
+
+$student_instance = new student(null, null, null, null);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_remove'])) {
+  $student_instance->removecourse_from_library($_POST['course_to_remove'], $_SESSION['user_id']);
 }
 
-$mycourses = course::fetchstudent_courses($_SESSION['user_id']);
-$student_instance = new student(null,null,null,null);
 
-if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_remove'])){
-  $student_instance->removecourse_from_library($_POST['course_to_remove'],$_SESSION['user_id']);
+if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['previous'])){
+  if($current_page > 1){
+    $current_page--;
+    $mycourses = course::fetchstudent_courses($_SESSION['user_id'],$current_page);
+  }
 }
 
+
+if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['next'])){
+  if($current_page < count($mycourses)){
+    $current_page++;
+    $mycourses = course::fetchstudent_courses($_SESSION['user_id'],$current_page);
+  }
+}
 ?>
 
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="External_files/index.css?<?php echo time() ?>">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="External_files/index.css?<?php echo time() ?>">
 </head>
+
 <body>
 
 
-<header class='flex shadow-lg py-4 px-4 sm:px-10 bg-white font-[sans-serif] min-h-[70px] tracking-wide relative z-50' style="position: relative;">
+  <header class='flex shadow-lg py-4 px-4 sm:px-10 bg-white font-[sans-serif] min-h-[70px] tracking-wide relative z-50' style="position: relative;">
     <div class='flex flex-wrap items-center justify-between gap-4 w-full'>
 
 
@@ -59,18 +77,18 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_remove'])){
         <?php
         if (isset($_SESSION['role']) && $_SESSION['role'] === 'student'):
         ?>
-        <li class='max-lg:border-b max-lg:py-3 px-3'>
-          <a href='library.php' class='tt text-white block font-semibold text-[15px]'>My courses</a>
-        </li>
+          <li class='max-lg:border-b max-lg:py-3 px-3'>
+            <a href='library.php' class='tt text-white block font-semibold text-[15px]'>My courses</a>
+          </li>
         <?php endif; ?>
 
 
         <?php
         if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'):
         ?>
-        <li class='max-lg:border-b max-lg:py-3 px-3'>
-          <a href='admin_dashboard.php' class='tt text-white block font-semibold text-[15px]'>Management</a>
-        </li>
+          <li class='max-lg:border-b max-lg:py-3 px-3'>
+            <a href='admin_dashboard.php' class='tt text-white block font-semibold text-[15px]'>Management</a>
+          </li>
         <?php endif; ?>
       </ul>
 
@@ -161,10 +179,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_remove'])){
   if (!empty($mycourses)):
   ?>
 
-    <div class="coursestt-container  left-[260px]">
-    <h1 id="cgm"> My courses :</h1>
-      <div class="teacher_courses  overflow-x-auto mt-8" style="border:1px solid gray;">
-    
+    <section class="courses absolute top-[18px] left-[266px]"  style="width:1200px;">
+      <div class="gridd" style="width:1200px;">
+
 
         <?php
         foreach ($mycourses as $mycourse):
@@ -187,14 +204,43 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_remove'])){
         endforeach;
         ?>
 
+
+
       </div>
 
 
 
 
-    </div>
+      </div>
+    </section>
+
+    <form action="library.php" method="POST" style="padding-top: 40px;padding-bottom: 40px;" class="flex space-x-5 justify-center font-[sans-serif] bg-white absolute top-[100vh] left-[276px]">
+
+<button name="previous" class="flex items-center justify-center shrink-0 hover:bg-gray-100 border-2 cursor-pointer w-10 h-10 rounded-full">
+  <svg xmlns="http://www.w3.org/2000/svg" class="w-3 fill-gray-400" viewBox="0 0 55.753 55.753">
+    <path
+      d="M12.745 23.915c.283-.282.59-.52.913-.727L35.266 1.581a5.4 5.4 0 0 1 7.637 7.638L24.294 27.828l18.705 18.706a5.4 5.4 0 0 1-7.636 7.637L13.658 32.464a5.367 5.367 0 0 1-.913-.727 5.367 5.367 0 0 1-1.572-3.911 5.369 5.369 0 0 1 1.572-3.911z"
+      data-original="#000000" />
+  </svg>
+</button>
+
+<li
+  class="flex items-center justify-center shrink-0 bg-[#e6ba88]  border-2 border-[#e6ba88] cursor-pointer text-base font-bold text-white w-10 h-10 rounded-full">
+  <?php echo $current_page; ?>
+</li>
+
+<button name="next" class="flex items-center justify-center shrink-0 hover:bg-gray-100 border-2 cursor-pointer w-10 h-10 rounded-full ">
+  <svg xmlns="http://www.w3.org/2000/svg" class="w-3 fill-gray-400 rotate-180" viewBox="0 0 55.753 55.753">
+    <path
+      d="M12.745 23.915c.283-.282.59-.52.913-.727L35.266 1.581a5.4 5.4 0 0 1 7.637 7.638L24.294 27.828l18.705 18.706a5.4 5.4 0 0 1-7.636 7.637L13.658 32.464a5.367 5.367 0 0 1-.913-.727 5.367 5.367 0 0 1-1.572-3.911 5.369 5.369 0 0 1 1.572-3.911z"
+      data-original="#000000" />
+  </svg>
+</button>
+    </form>
+
   <?php endif; ?>
-  
-    
+
+
 </body>
+
 </html>

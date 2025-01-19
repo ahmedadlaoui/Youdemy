@@ -1,7 +1,7 @@
 <?php
 
 require 'admin_actions.php';
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin' ) {
+if (!isset($_SESSION['role'])  ){//$_SESSION['role'] !== 'admin' ) {
   header('location: index.php');
   exit();
 }

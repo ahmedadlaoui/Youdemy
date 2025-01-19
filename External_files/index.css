@@ -111,7 +111,7 @@ header{
     grid-template-columns: 1fr 1fr 1fr 1fr;
     row-gap: 34px;
     column-gap: 20px;
-
+    scale: 0.9;
 }
 .card{
     width: 300px;
@@ -265,4 +265,12 @@ footer{
     left: 12px;
     font-size: 26px;
     font-weight: 700;
+}
+.gridd{
+    width: 80%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    row-gap: 34px;
+    column-gap: 16px;
+    scale: 0.9;
 }

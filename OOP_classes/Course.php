@@ -103,13 +103,13 @@ abstract class course
         return  $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public static function fetchstudent_courses($user_id)
+    public static function fetchstudent_courses($user_id,$current_page)
     {
         try {
-
+            $courses_limit = ($current_page - 1) * 8;
             $dbconn = database_connection::getinstance();
             $connection = $dbconn->getconnection();
-            $stmt = $connection->prepare("SELECT * FROM library l join courses c on l.course_id = c.course_id WHERE user_id = :user_id");
+            $stmt = $connection->prepare("SELECT * FROM library l  join courses c on l.course_id = c.course_id WHERE user_id = :user_id LIMIT $courses_limit,8 ");
             $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
             $stmt->execute();
             return  $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -117,6 +117,7 @@ abstract class course
             die('error fetching your courses' . $e->getMessage());
         }
     }
+
 
     public static function addcourse_tolibrary($course_id, $user_id)
     {

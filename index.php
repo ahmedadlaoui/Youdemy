@@ -2,9 +2,12 @@
 require 'OOP_classes/user.php';
 require 'OOP_classes/Course.php';
 
+$current_page = 1;
+$coursess = course::fetchallcoursesindex($current_page);
+
 
 if (isset($_SESSION['user_id'])) {
-  $mycourses = course::fetchstudent_courses($_SESSION['user_id']);
+  $mycourses = course::fetchstudent_courses($_SESSION['user_id'],$current_page);
 }
 
 
@@ -48,8 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search_button']) && e
 }
 
 
-$current_page = 1;
-$coursess = course::fetchallcoursesindex($current_page);
+
 
 
 
@@ -288,7 +290,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['next'])){
 
 
 
-
+<?php  if (!isset($_POST['search_value'])) { ?>
   <form action="index.php" method="POST" style="padding-top: 40px;padding-bottom: 40px;" class="flex space-x-5 justify-center font-[sans-serif] bg-white">
 
     <button name="previous" class="flex items-center justify-center shrink-0 hover:bg-gray-100 border-2 cursor-pointer w-10 h-10 rounded-full">
@@ -313,8 +315,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['next'])){
     </button>
         </form>
 
+        <?php } ?>
 
-  <!-- Footer -->
   <footer class="font-sans tracking-wide bg-gray-50 px-10 pt-12 pb-6">
     <div class="flex flex-wrap justify-between gap-10">
       <div class="max-w-md">
