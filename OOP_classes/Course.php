@@ -4,6 +4,7 @@
 
 abstract class course
 {
+    protected $course_id;
     protected $course_title;
     protected $course_description;
     protected $category_id;
@@ -12,8 +13,9 @@ abstract class course
     protected $conn;
     protected $user_id;
 
-    public function __construct($course_title, $course_description, $category_id, $course_banner, $course_type, $user_id)
+    public function __construct($course_id,$course_title, $course_description, $category_id, $course_banner, $course_type, $user_id)
     {
+        $this->course_id = $course_id;
         $this->course_title = $course_title;
         $this->course_description = $course_description;
         $this->category_id = $category_id;
@@ -55,8 +57,13 @@ abstract class course
     public static function deletecourse($course_id)
     {
         try {
+
             $dbconn = database_connection::getinstance();
             $connection = $dbconn->getconnection();
+
+            $stmt = $connection->prepare("DELETE FROM library WHERE course_id = :courseid");
+            $stmt->bindParam(':courseid', $course_id);
+            $stmt->execute();
 
             $stmt = $connection->prepare("DELETE FROM assigned_tags WHERE course_id = :courseid");
             $stmt->bindParam(':courseid', $course_id);
@@ -68,10 +75,11 @@ abstract class course
 
             header('location: teacher_dashboard.php');
         } catch (PDOException $e) {
-            die('error deleting the course') . $e->getMessage();
+            die('error deleting the course' . $e->getMessage());
         }
     }
-    public static function fetchcourseinfos($course_id){
+    public static function fetchcourseinfos($course_id)
+    {
         $dbconn = database_connection::getinstance();
         $connection = $dbconn->getconnection();
 
@@ -80,6 +88,51 @@ abstract class course
         $stmt->execute();
         return  $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public static function fetchstudent_courses($user_id)
+    {
+        try {
+
+            $dbconn = database_connection::getinstance();
+            $connection = $dbconn->getconnection();
+            $stmt = $connection->prepare("SELECT * FROM library l join courses c on l.course_id = c.course_id WHERE user_id = :user_id");
+            $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+            $stmt->execute();
+            return  $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            die('error fetching your courses' . $e->getMessage());
+        }
+    }
+
+    public static function addcourse_tolibrary($course_id, $user_id)
+    {
+
+        try {
+            $dbconn = database_connection::getinstance();
+            $connection = $dbconn->getconnection();
+            $stmt = $connection->prepare("INSERT INTO library(course_id,user_id) VALUES(:course_id,:user_id)");
+            $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+            $stmt->bindParam(':course_id', $course_id, PDO::PARAM_INT);
+            $stmt->execute();
+            header('location: index.php');
+            exit();
+        } catch (PDOException $e) {
+            die('error adding  course to your library' . $e->getMessage());
+        }
+    }
+    public static function getcontent_type($course_id){
+        try{
+            $dbconn = database_connection::getinstance();
+            $connection = $dbconn->getconnection();
+            $stmt = $connection->prepare("SELECT course_type FROM courses WHERE course_id = :course_id");
+            $stmt->bindParam(':course_id', $course_id, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        }catch(PDOException $e){
+            die('error getting the content type' . $e->getMessage());
+        }
+    }
 }
 
 
@@ -87,10 +140,10 @@ class text_course extends course
 {
     private $text_content;
 
-    public function __construct($text_content, $course_title, $course_description, $category_id, $course_banner, $course_type, $user_id)
+    public function __construct($course_id,$text_content, $course_title, $course_description, $category_id, $course_banner, $course_type, $user_id)
     {
         $this->text_content = $text_content;
-        parent::__construct($course_title, $course_description, $category_id, $course_banner, $course_type, $user_id);
+        parent::__construct($course_id,$course_title, $course_description, $category_id, $course_banner, $course_type, $user_id);
     }
     public function addcourse(array $tags)
     {
@@ -163,6 +216,19 @@ class text_course extends course
             echo "Error modifying course: " . $e->getMessage();
         }
     }
+
+    public function display($course_id){
+        try{
+
+            $stmt = $this->conn->prepare("SELECT * FROM courses WHERE course_id = :course_id");
+            $stmt->bindParam(':course_id',$course_id);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        }catch(PDOException $e){
+            echo "Error fetching course details: " . $e->getMessage();
+        }
+    }
 }
 
 
@@ -171,10 +237,10 @@ class video_course extends course
 
     private $video_content;
 
-    public function __construct($video_content, $course_title, $course_description, $category_id, $course_banner, $course_type, $user_id)
+    public function __construct($course_id,$video_content, $course_title, $course_description, $category_id, $course_banner, $course_type, $user_id)
     {
         $this->video_content = $video_content;
-        parent::__construct($course_title, $course_description, $category_id, $course_banner, $course_type, $user_id);
+        parent::__construct($course_id,$course_title, $course_description, $category_id, $course_banner, $course_type, $user_id);
     }
     public function addcourse(array $tags)
     {
@@ -249,6 +315,19 @@ class video_course extends course
             echo "Error modifying course: " . $e->getMessage();
         }
     }
+
+    public function display(){
+        try{
+
+            $stmt = $this->conn->prepare("SELECT * FROM courses WHERE course_id = :course_id");
+            $stmt->bindParam(':course_id',$this->course_id);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        }catch(PDOException $e){
+            echo "Error fetching course details: " . $e->getMessage();
+        }
+    }
 }
 
 
@@ -256,12 +335,12 @@ class video_course extends course
 
 class coursefactory
 {
-    public static function createcourse_instance($content, $course_title, $course_description, $category_id, $course_banner, $course_type, $teacher_id)
+    public static function createcourse_instance($course_id,$content, $course_title, $course_description, $category_id, $course_banner, $course_type, $teacher_id)
     {
         if ($course_type === 'text') {
-            return new text_course($content, $course_title, $course_description, $category_id, $course_banner, $course_type, $teacher_id);
+            return new text_course($course_id,$content, $course_title, $course_description, $category_id, $course_banner, $course_type, $teacher_id);
         } else {
-            return new video_course($content, $course_title, $course_description, $category_id, $course_banner, $course_type, $teacher_id);
+            return new video_course($course_id,$content, $course_title, $course_description, $category_id, $course_banner, $course_type, $teacher_id);
         }
     }
 }

@@ -70,7 +70,7 @@ class category
             exit();
 
         }catch(PDOException $e){
-            die('error deleting category'.$e->getMessage());
+            die('error editing category'.$e->getMessage());
         }
     }
 }

@@ -2,12 +2,29 @@
 require 'OOP_classes/user.php';
 require 'OOP_classes/Course.php';
 
+$courses = course::fetchallcourses();
+if(isset($_SESSION['user_id'])){
+  $mycourses = course::fetchstudent_courses($_SESSION['user_id']);
+}
+
+
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['log_out-button'])) {
   User::log_out();
 }
 
-
-$courses = course::fetchallcourses();
+if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['add_to_library']) && $_SESSION['role'] === 'student' ){
+  $verify = false;
+  foreach($mycourses as $mycourse):
+    if($mycourse['course_id'] == $_POST['course_to_add']){
+      $verify = true;
+      break;
+    }
+  endforeach;
+ if(!$verify && isset($_SESSION['user_id'])){
+  course::addcourse_tolibrary($_POST['course_to_add'],$_SESSION['user_id']);
+ }
+}
 
 ?>
 
@@ -51,18 +68,18 @@ $courses = course::fetchallcourses();
         <?php
         if (isset($_SESSION['role']) && $_SESSION['role'] === 'student'):
         ?>
-        <li class='max-lg:border-b max-lg:py-3 px-3'>
-          <a href='library.php' class='tt text-white block font-semibold text-[15px]'>My courses</a>
-        </li>
+          <li class='max-lg:border-b max-lg:py-3 px-3'>
+            <a href='library.php' class='tt text-white block font-semibold text-[15px]'>My courses</a>
+          </li>
         <?php endif; ?>
 
 
         <?php
         if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'):
         ?>
-        <li class='max-lg:border-b max-lg:py-3 px-3'>
-          <a href='admin_dashboard.php' class='tt text-white block font-semibold text-[15px]'>Management</a>
-        </li>
+          <li class='max-lg:border-b max-lg:py-3 px-3'>
+            <a href='admin_dashboard.php' class='tt text-white block font-semibold text-[15px]'>Management</a>
+          </li>
         <?php endif; ?>
       </ul>
 
@@ -140,7 +157,11 @@ $courses = course::fetchallcourses();
           <h2><?php echo  $course['course_title'] ?></h2>
           <p><?php echo $course['course_description'] ?></p>
           <div class="btn-rating">
-            <button class="start-button">Start</button>
+
+            <form action="index.php" method="POST">
+              <input type="hidden" name="course_to_add" value="<?php echo $course['course_id'] ?>">
+              <button class="start-button" name="add_to_library">Start</button>
+            </form>
 
             <div class="strs flex items-center">
               <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">

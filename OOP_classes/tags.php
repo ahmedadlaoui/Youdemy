@@ -53,4 +53,32 @@ class tags
         die('error inserting tags') . $e->getMessage();
         }
     }
+
+    public function Edittag($tag_title,$old){
+        try{
+
+            $stmt = $this->conn->prepare("UPDATE tags SET tag_title = :title WHERE tag_title = :old_title");
+            $stmt->bindParam(':title',$tag_title);
+            $stmt->bindParam(':old_title',$old);
+            $stmt->execute();
+            header('location: admin_dashboard.php');
+            exit();
+
+        }catch(PDOException $e){
+            die('error editing tag'.$e->getMessage());
+        }
+    }
+    public function Deletetag($tag_title){
+        try{
+
+            $stmt = $this->conn->prepare("DELETE FROM tags WHERE tag_title = :title");
+            $stmt->bindParam(':title',$tag_title);
+            $stmt->execute();
+            header('location: admin_dashboard.php');
+            exit();
+
+        }catch(PDOException $e){
+            die('error deleting category'.$e->getMessage());
+        }
+    }
 }

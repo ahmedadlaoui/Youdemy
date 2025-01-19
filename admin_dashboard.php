@@ -1,76 +1,10 @@
 <?php
 
-require 'OOP_classes/user.php';
-require 'OOP_classes/Course.php';
-require 'OOP_classes/tags.php';
-require 'OOP_classes/category.php';
-
-$users_instance = new User(null, null, null, null);
-$users = $users_instance->fetchusers();
-$admin_instance = new admin(null, null, null, null);
-
-$courses = course::fetchallcourses();
-
-$topteacher = $admin_instance->topteacher();
-
-$user_instance = new teacher(null, null, null, null, null);
-$toptwo = $user_instance->top2courses();
-
-$categoriesinstance = new category(null, null);
-$Allcategories = $categoriesinstance->fetchallcategories();
-
-
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['activate_user'])) {
-
-  $admin_instance->activateaccount($_POST['user_id_tomanage'], $_POST['user_status']);
+require 'admin_actions.php';
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin' ) {
+  header('location: index.php');
+  exit();
 }
-
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_user'])) {
-  $admin_instance->deleteaccount($_POST['user_id_tomanage']);
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['suspend'])) {
-  $admin_instance->suspenduser($_POST['user_id_tomanage'], $_POST['user_statusB']);
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add-categories'])) {
-  $categories = array_filter(
-    array_map('trim', explode(',', $_POST['categories_to_add'])),
-    fn($value) => $value !== ''
-  );
-
-  $newcategories = array_diff($categories, array_column($Allcategories, 'category_title'));
-  //     var_dump($newcategories);
-  //     die('c');
-  $category_instance = new category(null, null);
-  $category_instance->insertcategories($newcategories);
-
-}
-
-$tagsinstance = new tags(null, null);
-$Alltags = $tagsinstance->fetchalltags();
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_tags'])) {
-  $tags = array_filter(
-    array_map('trim', explode(',', $_POST['tags_to_add'])),
-    fn($value) => $value !== ''
-  );
-  $newtags = array_diff($tags, array_column($Alltags, 'tag_title'));
-
-  $tags_instance = new tags(null, null);
-  $tags_instance->inserttags($newtags);
-}
-
-
-if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete-category'])){
-  $categoriesinstance->Deletecategory($_POST['category_todelete']);
-}
-if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_category'])){
-  $categoriesinstance->Editcategory($_POST['category_todelete'],$_POST['category_to_edit']);
-}
-
-
 ?>
 
 
@@ -420,17 +354,22 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_category'])){
           <tbody>
             <?php foreach ($Alltags as $tag):  ?>
               <tr>
+                <form action="admin_dashboard.php" method="POST">
                 <td class="px-4 py-2">
-                  <input type="text" class="w-full px-2 py-1 border border-[#8B5E3C] rounded bg-white text-[#8B5E3C]" value="<?php echo $tag['tag_title'] ?>">
+                  <input type="text" name="tag_title_toedit" class="w-full px-2 py-1 border border-[#8B5E3C] rounded bg-white text-[#8B5E3C]" value="<?php echo $tag['tag_title'] ?>">
+                  <input type="hidden" name="oldtag_title_toedit"  value="<?php echo $tag['tag_title'] ?>">
+              
+                
                 </td>
                 <td class="px-4 py-2 flex space-x-2">
-                  <button>
+                  <button name="Delete_tag">
                     <img src="images/delete_24dp_EA3323_FILL1_wght400_GRAD0_opsz24.svg" alt="">
                   </button>
-                  <button>
+                  <button name="edit_tag" type="submit">
                     <img src="images/save_24dp_5985E1_FILL1_wght400_GRAD0_opsz24.svg" alt="">
                   </button>
                 </td>
+                </form>
               </tr>
             <?php endforeach; ?>
           </tbody>

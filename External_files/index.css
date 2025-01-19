@@ -252,10 +252,17 @@ footer{
     right: 16px;
     bottom: 16px;
     font-weight: 500;
-    border-bottom: 1px solid gray;
+    border-bottom: 1px solid hsl(0, 0%, 50%);
 }
 #users_table{
     overflow-y: scroll;
     overflow-x: hidden;
     max-height: 600px!important;
+}
+#cgm{
+    position: absolute;
+    top: 14px;
+    left: 12px;
+    font-size: 26px;
+    font-weight: 700;
 }

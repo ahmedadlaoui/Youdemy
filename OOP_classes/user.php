@@ -1,7 +1,6 @@
 <?php
 session_start();
 require 'OOP_classes/database_connection.php';
-
 class User
 {
 

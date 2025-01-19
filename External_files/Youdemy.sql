@@ -60,7 +60,7 @@ create table courses(
 );
 -- @block   
 SELECT *
-FROM users;
+FROM courses;
 --@block
 create table library(
     course_id int not null,

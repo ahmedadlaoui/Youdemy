@@ -1,5 +1,5 @@
 <?php
-
+require 'OOP_classes/database_connection.php';
 require 'OOP_classes/user.php';
 require 'OOP_classes/Course.php';
 require 'OOP_classes/tags.php';
@@ -26,7 +26,7 @@ $toptwo = $user_instance->top2courses();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_creation'])) {
     $tags_to_add = $_POST['tags'];
-    $course_to_create = coursefactory::createcourse_instance($_POST['courseContent'], $_POST['courseTitle'], $_POST['courseDescription'], $_POST['courseCategory'], $_POST['courseBanner'], $_POST['contentType'], $_SESSION['user_id']);
+    $course_to_create = coursefactory::createcourse_instance(null,$_POST['courseContent'], $_POST['courseTitle'], $_POST['courseDescription'], $_POST['courseCategory'], $_POST['courseBanner'], $_POST['contentType'], $_SESSION['user_id']);
     $course_to_create->addcourse($tags_to_add);
 }
 
@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['load-infos'])) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_edit'])) {
     $tags_to_add = $_POST['newtags'];
-    $course_to_create = coursefactory::createcourse_instance($_POST['newcourseContent'], $_POST['newcourseTitle'], $_POST['newcourseDescription'], $_POST['newcourseCategory'], $_POST['newcourseBanner'], $_POST['newcontentType'], $_SESSION['user_id']);
+    $course_to_create = coursefactory::createcourse_instance(null,$_POST['newcourseContent'], $_POST['newcourseTitle'], $_POST['newcourseDescription'], $_POST['newcourseCategory'], $_POST['newcourseBanner'], $_POST['newcontentType'], $_SESSION['user_id']);
     $course_to_create->modifycourse($tags_to_add, $_POST['course_id_to_edit']);
 }
 
