@@ -1,5 +1,4 @@
 <?php
-require 'OOP_classes/database_connection.php';
 require 'OOP_classes/user.php';
 require 'OOP_classes/Course.php';
 require 'OOP_classes/tags.php';

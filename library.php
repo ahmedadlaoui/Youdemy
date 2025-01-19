@@ -1,10 +1,21 @@
 <?php 
-  session_start();
-  require 'OOP_classes/database_connection.php';
+  require 'OOP_classes/user.php';
   require 'OOP_classes/Course.php';
+if(!isset($_SESSION['role']) || $_SESSION['role'] !== 'student'){
+    header('location: index.php');
+}
+
+
+  if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['log_out-button'])) {
+    User::log_out();
+}
 
 $mycourses = course::fetchstudent_courses($_SESSION['user_id']);
+$student_instance = new student(null,null,null,null);
 
+if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_remove'])){
+  $student_instance->removecourse_from_library($_POST['course_to_remove'],$_SESSION['user_id']);
+}
 
 ?>
 
@@ -163,9 +174,9 @@ $mycourses = course::fetchstudent_courses($_SESSION['user_id']);
             <h2><?php echo $mycourse['course_title'] ?></h2>
             <p><?php echo $mycourse['course_description'] ?></p>
             <div class="btn-rating">
-              <form action="teacher_dashboard.php" method="POST">
-                <button name="submit-remove" type="submit" class="start-button" style="background-color:rgb(254, 52, 52);width:70px;">Remove</button>
-                <input type="hidden" name="course_to_delete" value="<?php echo $mycourse['course_id'] ?>">
+              <form action="library.php" method="POST">
+                <button name="submit_remove" type="submit" class="start-button" style="background-color:rgb(254, 52, 52);width:70px;">Remove</button>
+                <input type="hidden" name="course_to_remove" value="<?php echo $mycourse['course_id'] ?>">
                 <a class="start-buttonn" href="course_details.php?course_id=<?php echo $mycourse['course_id'] ?>" style="background-color:rgb(52, 163, 254);width:70px;margin-left:10px;text-align:center;">Details</a>
               </form>
 

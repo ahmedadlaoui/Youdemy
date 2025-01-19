@@ -265,3 +265,24 @@ class teacher extends User
         }
     }
 }
+
+class student extends User{
+
+    public function __construct($fullname, $email, $password, $role)
+    {
+        parent::__construct($fullname, $email, $password, $role);
+    }
+
+    public function removecourse_from_library($course_id,$user_id){
+
+        try{
+            $stmt=$this->conn->prepare("DELETE FROM library WHERE user_id =:user_id and course_id = :course_id");
+            $stmt->bindParam(':user_id',$user_id);
+            $stmt->bindParam(':course_id',$course_id);
+            $stmt->execute();
+            header('location: library.php');
+        }catch(PDOException $e){
+            die('Error removing course from your library' .$e->getMessage());
+        }
+    }
+}

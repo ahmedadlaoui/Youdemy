@@ -4,6 +4,10 @@ require 'OOP_classes/Course.php';
 require 'OOP_classes/tags.php';
 require 'OOP_classes/category.php';
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['log_out-button'])) {
+    User::log_out();
+}
+
 $users_instance = new User(null, null, null, null);
 $users = $users_instance->fetchusers();
 $admin_instance = new admin(null, null, null, null);

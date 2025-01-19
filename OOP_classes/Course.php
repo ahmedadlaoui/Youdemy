@@ -40,6 +40,20 @@ abstract class course
         }
     }
 
+    public static function fetchallcoursesindex($current_page)
+    {
+        $courses_limit = ($current_page - 1) * 8;
+        try {
+            $dbconn = database_connection::getinstance();
+            $connection = $dbconn->getconnection();
+            $stmt = $connection->prepare("SELECT * FROM courses LIMIT $courses_limit,8");
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            die('error fetching page courses') . $e->getMessage();
+        }
+    }
+
     public static function fetchteachercourses($teacher_ID)
     {
         try {

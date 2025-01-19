@@ -2,8 +2,8 @@
 require 'OOP_classes/user.php';
 require 'OOP_classes/Course.php';
 
-$courses = course::fetchallcourses();
-if(isset($_SESSION['user_id'])){
+
+if (isset($_SESSION['user_id'])) {
   $mycourses = course::fetchstudent_courses($_SESSION['user_id']);
 }
 
@@ -13,17 +13,59 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['log_out-button'])) {
   User::log_out();
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['add_to_library']) && $_SESSION['role'] === 'student' ){
+if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['add_to_library']) && $_SESSION['role'] === 'student') {
   $verify = false;
-  foreach($mycourses as $mycourse):
-    if($mycourse['course_id'] == $_POST['course_to_add']){
+  foreach ($mycourses as $mycourse):
+    if ($mycourse['course_id'] == $_POST['course_to_add']) {
       $verify = true;
       break;
     }
   endforeach;
- if(!$verify && isset($_SESSION['user_id'])){
-  course::addcourse_tolibrary($_POST['course_to_add'],$_SESSION['user_id']);
- }
+  if (!$verify && isset($_SESSION['user_id'])) {
+    course::addcourse_tolibrary($_POST['course_to_add'], $_SESSION['user_id']);
+  }
+}
+
+
+$courses = course::fetchallcourses();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search_button'])) {
+  $search_value = trim($_POST['search_value']);
+  $search_value = htmlspecialchars($search_value);
+  $searchedfor_courses = [];
+
+  foreach ($courses as $course) {
+
+    if (strpos(strtolower($course['course_title']), strtolower($search_value)) !== false || strpos(strtolower($course['course_description']), strtolower($search_value)) !== false) {
+      array_push($searchedfor_courses, $course);
+    }
+  }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search_button']) && empty($_POST['search_value'])) {
+  unset($_POST['search_button']);
+  unset($_POST['search_value']);
+}
+
+
+$current_page = 1;
+$coursess = course::fetchallcoursesindex($current_page);
+
+
+
+if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['previous'])){
+  if($current_page > 1){
+    $current_page--;
+    $coursess = course::fetchallcoursesindex($current_page);
+  }
+}
+
+
+if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['next'])){
+  if($current_page < count($courses)){
+    $current_page++;
+    $coursess = course::fetchallcoursesindex($current_page);
+  }
 }
 
 ?>
@@ -116,7 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['add_to_library']) &&
     </div>
   </header>
   <div class="fake"></div>
-  <!-- Hero Section -->
+
   <section class="ss relative text-white">
     <div class="container mx-auto flex flex-col lg:flex-row items-center py-20 px-6 lg:px-20">
       <div class="lg:w-1/2 text-center lg:text-left">
@@ -133,13 +175,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['add_to_library']) &&
       </div>
     </div>
 
-    <div class="sb flex border-2 border-none overflow-hidden max-w-md mx-auto font-[sans-serif]">
-      <input type="email" placeholder="Search for a course..."
+    <form action="index.php" method="POST" class="sb flex border-2 border-none overflow-hidden max-w-md mx-auto font-[sans-serif]">
+      <input name="search_value" type="text" placeholder="Search for a course..." value="<?php echo isset($_POST['search_value']) ? htmlspecialchars($_POST['search_value']) : ''; ?>"
         class="w-full outline-none bg-white text-gray-600 text-sm px-4 py-3" />
-      <button type='button' class="flex items-center justify-center bg-[#4b3832] px-5 text-sm text-white">
+      <button name="search_button" type='submit' class="flex items-center justify-center bg-[#4b3832] px-5 text-sm text-white">
         Search
       </button>
-    </div>
+    </form>
 
   </section>
 
@@ -149,84 +191,127 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && isset($_POST['add_to_library']) &&
 
 
       <?php
-      foreach ($courses as $course):
+      if (!isset($_POST['search_value'])) {
+        foreach ($coursess as $course):
       ?>
 
-        <div class="card">
-          <img src="<?php echo $course['course_banner'] ?>" alt="">
-          <h2><?php echo  $course['course_title'] ?></h2>
-          <p><?php echo $course['course_description'] ?></p>
-          <div class="btn-rating">
+          <div class="card">
+            <img src="<?php echo $course['course_banner'] ?>" alt="">
+            <h2><?php echo  $course['course_title'] ?></h2>
+            <p><?php echo $course['course_description'] ?></p>
+            <div class="btn-rating">
 
-            <form action="index.php" method="POST">
-              <input type="hidden" name="course_to_add" value="<?php echo $course['course_id'] ?>">
-              <button class="start-button" name="add_to_library">Start</button>
-            </form>
+              <form action="index.php" method="POST">
+                <input type="hidden" name="course_to_add" value="<?php echo $course['course_id'] ?>">
+                <button class="start-button" name="add_to_library">Start</button>
+              </form>
 
-            <div class="strs flex items-center">
-              <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-              </svg>
-              <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-              </svg>
-              <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-              </svg>
-              <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-              </svg>
-              <svg class="w-4 h-4 text-gray-300 me-1 dark:text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-              </svg>
-              <p class="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">4.95</p>
+              <div class="strs flex items-center">
+                <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                </svg>
+                <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                </svg>
+                <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                </svg>
+                <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                </svg>
+                <svg class="w-4 h-4 text-gray-300 me-1 dark:text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                </svg>
+                <p class="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">4.95</p>
 
+              </div>
             </div>
+
+
           </div>
 
+        <?php
+        endforeach;
+      } else {
+        ?>
 
-        </div>
+        <?php foreach ($searchedfor_courses as $searched_for_course): ?>
 
-      <?php
-      endforeach;
-      ?>
+          <div class="card">
+            <img src="<?php echo $searched_for_course['course_banner'] ?>" alt="">
+            <h2><?php echo  $searched_for_course['course_title'] ?></h2>
+            <p><?php echo $searched_for_course['course_description'] ?></p>
+            <div class="btn-rating">
 
+              <form action="index.php" method="POST">
+                <input type="hidden" name="course_to_add" value="<?php echo $searched_for_course['course_id'] ?>">
+                <button class="start-button" name="add_to_library">Start</button>
+              </form>
+
+              <div class="strs flex items-center">
+                <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                </svg>
+                <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                </svg>
+                <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                </svg>
+                <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                </svg>
+                <svg class="w-4 h-4 text-gray-300 me-1 dark:text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                </svg>
+                <p class="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">4.95</p>
+
+              </div>
+            </div>
+
+
+          </div>
+
+        <?php endforeach; ?>
+
+
+
+      <?php }; ?>
+
+    </div>
   </section>
 
 
 
-  <ul style="padding-top: 40px;padding-bottom: 40px;" class="flex space-x-5 justify-center font-[sans-serif] bg-white">
-    <li class="flex items-center justify-center shrink-0 bg-gray-100 w-10 h-10 rounded-full">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-3 fill-gray-300" viewBox="0 0 55.753 55.753">
+
+
+
+
+
+
+  <form action="index.php" method="POST" style="padding-top: 40px;padding-bottom: 40px;" class="flex space-x-5 justify-center font-[sans-serif] bg-white">
+
+    <button name="previous" class="flex items-center justify-center shrink-0 hover:bg-gray-100 border-2 cursor-pointer w-10 h-10 rounded-full">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-3 fill-gray-400" viewBox="0 0 55.753 55.753">
         <path
           d="M12.745 23.915c.283-.282.59-.52.913-.727L35.266 1.581a5.4 5.4 0 0 1 7.637 7.638L24.294 27.828l18.705 18.706a5.4 5.4 0 0 1-7.636 7.637L13.658 32.464a5.367 5.367 0 0 1-.913-.727 5.367 5.367 0 0 1-1.572-3.911 5.369 5.369 0 0 1 1.572-3.911z"
           data-original="#000000" />
       </svg>
-    </li>
+    </button>
+
     <li
       class="flex items-center justify-center shrink-0 bg-[#e6ba88]  border-2 border-[#e6ba88] cursor-pointer text-base font-bold text-white w-10 h-10 rounded-full">
-      1
+      <?php echo $current_page; ?>
     </li>
-    <li
-      class="flex items-center justify-center shrink-0 hover:bg-gray-50  border-2 cursor-pointer text-base font-bold text-[#333] w-10 h-10 rounded-full">
-      2
-    </li>
-    <li
-      class="flex items-center justify-center shrink-0 hover:bg-gray-50  border-2 cursor-pointer text-base font-bold text-[#333] w-10 h-10 rounded-full">
-      3
-    </li>
-    <li
-      class="flex items-center justify-center shrink-0 hover:bg-gray-50  border-2 cursor-pointer text-base font-bold text-[#333] w-10 h-10 rounded-full">
-      4
-    </li>
-    <li class="flex items-center justify-center shrink-0 hover:bg-gray-50 border-2 cursor-pointer w-10 h-10 rounded-full">
+
+    <button name="next" class="flex items-center justify-center shrink-0 hover:bg-gray-100 border-2 cursor-pointer w-10 h-10 rounded-full">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-3 fill-gray-400 rotate-180" viewBox="0 0 55.753 55.753">
         <path
           d="M12.745 23.915c.283-.282.59-.52.913-.727L35.266 1.581a5.4 5.4 0 0 1 7.637 7.638L24.294 27.828l18.705 18.706a5.4 5.4 0 0 1-7.636 7.637L13.658 32.464a5.367 5.367 0 0 1-.913-.727 5.367 5.367 0 0 1-1.572-3.911 5.369 5.369 0 0 1 1.572-3.911z"
           data-original="#000000" />
       </svg>
-    </li>
-  </ul>
+    </button>
+        </form>
 
 
   <!-- Footer -->

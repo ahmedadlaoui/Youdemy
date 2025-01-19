@@ -1,6 +1,6 @@
 <?php
 
-require 'actions.php';
+require 'teacher_actions.php';
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'teacher' ) {
   header('location: index.php');

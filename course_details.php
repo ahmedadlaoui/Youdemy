@@ -6,12 +6,23 @@ require 'OOP_classes/Course.php';
 
 $course_type = course::getcontent_type($_GET['course_id']);
 
+$mycourses = course::fetchstudent_courses($_SESSION['user_id']);
+
+$found = false; 
+foreach ($mycourses as $mycourse) {
+    if ($mycourse['course_id'] == $_GET['course_id']) {
+        $found = true;
+        break; 
+    }
+}
+
 $course_to_display = coursefactory::createcourse_instance($_GET['course_id'], null, null, null, null, null, $course_type, null);
 $current_course =  $course_to_display->display();
 
-// var_dump($current_course);
-// die('c');
-
+if(!$found){
+    header('location: library.php');
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -20,7 +31,7 @@ $current_course =  $course_to_display->display();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>course_details</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="External_files/index.css?<?php echo time() ?>">
 </head>
