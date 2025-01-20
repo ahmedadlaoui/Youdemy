@@ -1,7 +1,7 @@
 <?php
 
 require 'admin_actions.php';
-if (!isset($_SESSION['role'])  ){//$_SESSION['role'] !== 'admin' ) {
+if (!isset($_SESSION['role'])  || $_SESSION['role'] !== 'admin') {
   header('location: index.php');
   exit();
 }
@@ -22,6 +22,78 @@ if (!isset($_SESSION['role'])  ){//$_SESSION['role'] !== 'admin' ) {
 </head>
 
 <body>
+
+  <section class="courses absolute  left-[266px]" style="width:1200px;top:272px;">
+    <div class="gridd" style="width:1200px;">
+
+      <?php
+        foreach ($courses as $course):
+      ?>
+
+          <div class="card">
+            <img src="<?php echo $course['course_banner'] ?>" alt="">
+            <h2><?php echo  $course['course_title'] ?></h2>
+            <p><?php echo $course['course_description'] ?></p>
+            <div class="btn-rating">
+
+              <form action="admin_dashboard.php" method="POST">
+                <input type="hidden" name="course_to_delete" value="<?php echo $course['course_id'] ?>">
+                <button class="start-button" name="dlete_from_system" style="background-color:rgb(254, 52, 52);">Delete</button>
+              </form>
+
+              <div class="strs flex items-center">
+                <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                </svg>
+                <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                </svg>
+                <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                </svg>
+                <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                </svg>
+                <svg class="w-4 h-4 text-gray-300 me-1 dark:text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                </svg>
+                <p class="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">4.95</p>
+
+              </div>
+            </div>
+
+
+          </div>
+
+      <?php
+        endforeach;
+      ?>
+    </div>
+
+    <form action="admin_dashboard.php" method="POST" style="padding-top: 40px;padding-bottom: 40px;" class="flex space-x-5 justify-center font-[sans-serif] bg-transparent absolute bottom-[-45px]">
+
+      <button name="previous" class="flex items-center justify-center shrink-0 hover:bg-gray-100 border-2 cursor-pointer w-10 h-10 rounded-full">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 fill-gray-400" viewBox="0 0 55.753 55.753">
+          <path
+            d="M12.745 23.915c.283-.282.59-.52.913-.727L35.266 1.581a5.4 5.4 0 0 1 7.637 7.638L24.294 27.828l18.705 18.706a5.4 5.4 0 0 1-7.636 7.637L13.658 32.464a5.367 5.367 0 0 1-.913-.727 5.367 5.367 0 0 1-1.572-3.911 5.369 5.369 0 0 1 1.572-3.911z"
+            data-original="#000000" />
+        </svg>
+      </button>
+
+      <li
+        class="flex items-center justify-center shrink-0 bg-[#e6ba88]  border-2 border-[#e6ba88] cursor-pointer text-base font-bold text-white w-10 h-10 rounded-full">
+        <?php echo $current_page; ?>
+      </li>
+
+      <button name="next" class="flex items-center justify-center shrink-0 hover:bg-gray-100 border-2 cursor-pointer w-10 h-10 rounded-full">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 fill-gray-400 rotate-180" viewBox="0 0 55.753 55.753">
+          <path
+            d="M12.745 23.915c.283-.282.59-.52.913-.727L35.266 1.581a5.4 5.4 0 0 1 7.637 7.638L24.294 27.828l18.705 18.706a5.4 5.4 0 0 1-7.636 7.637L13.658 32.464a5.367 5.367 0 0 1-.913-.727 5.367 5.367 0 0 1-1.572-3.911 5.369 5.369 0 0 1 1.572-3.911z"
+            data-original="#000000" />
+        </svg>
+      </button>
+    </form>
+  </section>
 
 
   <header class='flex shadow-lg py-4 px-4 sm:px-10 bg-white font-[sans-serif] min-h-[70px] tracking-wide relative z-50' style="position: relative;">
@@ -179,6 +251,10 @@ if (!isset($_SESSION['role'])  ){//$_SESSION['role'] !== 'admin' ) {
   </nav>
 
 
+
+
+
+
   <section class="flex flex-col absolute  left-[260px] ">
     <div
       class="mt-10 grid grid-cols-2 lg:grid-cols-4 gap-y-5 lg:gap-y-0 gap-x-5 place-items-center w-full mx-auto max-w-7xl px-5">
@@ -256,7 +332,7 @@ if (!isset($_SESSION['role'])  ){//$_SESSION['role'] !== 'admin' ) {
     </div>
   </section>
 
-  <div class="font-sans overflow-x-auto absolute  left-[260px] " style="height:max-content; width: calc(90vw - 260px);margin-left:4vw;top:1322px;">
+  <div class="font-sans overflow-x-auto absolute  left-[260px] " style="height:max-content; width: calc(90vw - 260px);margin-left:4vw;top:2052px;">
     <h1 style="font-size: 26px;font-weight:800;margin-left:10px;margin-bottom:10px;border-bottom:1px solid gray;">All users :</h1>
     <table class="min-w-full divide-y divide-gray-200" id="users_table">
       <thead class=" bg-[#f9f4f0] whitespace-nowrap">
@@ -339,121 +415,122 @@ if (!isset($_SESSION['role'])  ){//$_SESSION['role'] !== 'admin' ) {
   </div>
 
 
-  <div class="bg-white rounded-lg w-full max-w-3xl p-8 absolute top-[312px]  left-[260px]" style=" width: calc(96vw - 260px);">
-  <h2 class="text-3xl font-bold text-start text-[#4b3832] mb-6">Manage Tags & Categories</h2>
-  <p class="text-start text-[#7d5e4d] mb-8">Add multiple tags and categories at once for courses.</p>
+  <div class="bg-white rounded-lg w-full max-w-3xl p-8 absolute top-[1062px]  left-[260px]" style=" width: calc(96vw - 260px);">
+    <h2 class="text-3xl font-bold text-start text-[#4b3832] mb-6">Manage Tags & Categories</h2>
+    <p class="text-start text-[#7d5e4d] mb-8">Add multiple tags and categories at once for courses.</p>
 
 
-  <div class="overflow-auto h-[450px] p-2 border rounded-lg bg-white " style="width: calc(90vw - 260px); margin-left:2vw;">
-  <div class="flex space-x-6">
-  
-    <div class="flex-1">
-      <h3 class="text-xl font-semibold mb-2 text-[#4b3832]">Tags</h3>
-      <div class="overflow-y-auto max-h-[400px]">
-        <table class="min-w-full table-auto bg-[#f9f4f0] rounded-sm shadow-md">
-          <tbody>
-            <?php foreach ($Alltags as $tag):  ?>
-              <tr>
-                <form action="admin_dashboard.php" method="POST">
-                <td class="px-4 py-2">
-                  <input type="text" name="tag_title_toedit" class="w-full px-2 py-1 border border-[#8B5E3C] rounded bg-white text-[#8B5E3C]" value="<?php echo $tag['tag_title'] ?>">
-                  <input type="hidden" name="oldtag_title_toedit"  value="<?php echo $tag['tag_title'] ?>">
-              
-                
-                </td>
-                <td class="px-4 py-2 flex space-x-2">
-                  <button name="Delete_tag">
-                    <img src="images/delete_24dp_EA3323_FILL1_wght400_GRAD0_opsz24.svg" alt="">
-                  </button>
-                  <button name="edit_tag" type="submit">
-                    <img src="images/save_24dp_5985E1_FILL1_wght400_GRAD0_opsz24.svg" alt="">
-                  </button>
-                </td>
-                </form>
-              </tr>
-            <?php endforeach; ?>
-          </tbody>
-        </table>
+    <div class="overflow-auto h-[450px] p-2 border rounded-lg bg-white " style="width: calc(90vw - 260px); margin-left:2vw;">
+      <div class="flex space-x-6">
+
+        <div class="flex-1">
+          <h3 class="text-xl font-semibold mb-2 text-[#4b3832]">Tags</h3>
+          <div class="overflow-y-auto max-h-[400px]">
+            <table class="min-w-full table-auto bg-[#f9f4f0] rounded-sm shadow-md">
+              <tbody>
+                <?php foreach ($Alltags as $tag):  ?>
+                  <tr>
+                    <form action="admin_dashboard.php" method="POST">
+                      <td class="px-4 py-2">
+                        <input type="text" name="tag_title_toedit" class="w-full px-2 py-1 border border-[#8B5E3C] rounded bg-white text-[#8B5E3C]" value="<?php echo $tag['tag_title'] ?>">
+                        <input type="hidden" name="oldtag_title_toedit" value="<?php echo $tag['tag_title'] ?>">
+
+
+                      </td>
+                      <td class="px-4 py-2 flex space-x-2">
+                        <button name="Delete_tag">
+                          <img src="images/delete_24dp_EA3323_FILL1_wght400_GRAD0_opsz24.svg" alt="">
+                        </button>
+                        <button name="edit_tag" type="submit">
+                          <img src="images/save_24dp_5985E1_FILL1_wght400_GRAD0_opsz24.svg" alt="">
+                        </button>
+                      </td>
+                    </form>
+                  </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="flex-1">
+          <h3 class="text-xl font-semibold mb-2 text-[#4b3832]">Categories</h3>
+          <div class="overflow-y-auto h-[400px]">
+            <table class="min-w-full table-auto rounded-sm shadow-md bg-[#f9f4f0]">
+              <tbody>
+                <?php foreach ($Allcategories as $category):  ?>
+                  <tr>
+                    <form action="admin_dashboard.php" method="POST">
+                      <td class="px-4 py-2">
+                        <input type="text" name="category_todelete" class="w-full px-2 py-1 border border-[#8B5E3C] rounded bg-white text-[#8B5E3C]" value="<?php echo $category['category_title'] ?>">
+                        <input type="hidden" name="category_to_edit" class="w-full px-2 py-1 border border-[#8B5E3C] rounded bg-white text-[#8B5E3C]" value="<?php echo $category['category_title'] ?>">
+                      </td>
+                      <td class="px-4 py-2 flex space-x-2">
+                        <button name="delete-category" type="submit">
+                          <img src="images/delete_24dp_EA3323_FILL1_wght400_GRAD0_opsz24.svg" alt="">
+                        </button>
+                        <button name="edit_category" type="submit">
+                          <img src="images/save_24dp_5985E1_FILL1_wght400_GRAD0_opsz24.svg" alt="">
+                        </button>
+                      </td>
+                    </form>
+                  </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="flex-1">
-      <h3 class="text-xl font-semibold mb-2 text-[#4b3832]">Categories</h3>
-      <div class="overflow-y-auto h-[400px]">
-        <table class="min-w-full table-auto rounded-sm shadow-md bg-[#f9f4f0]">
-          <tbody>
-            <?php foreach ($Allcategories as $category):  ?>
-              <tr>
-                <form action="admin_dashboard.php" method="POST">
-                <td class="px-4 py-2">
-                  <input type="text" name="category_todelete" class="w-full px-2 py-1 border border-[#8B5E3C] rounded bg-white text-[#8B5E3C]" value="<?php echo $category['category_title'] ?>">
-                  <input type="hidden" name="category_to_edit" class="w-full px-2 py-1 border border-[#8B5E3C] rounded bg-white text-[#8B5E3C]" value="<?php echo $category['category_title'] ?>">
-                </td>
-                <td class="px-4 py-2 flex space-x-2">
-                  <button name="delete-category" type="submit">
-                    <img src="images/delete_24dp_EA3323_FILL1_wght400_GRAD0_opsz24.svg" alt="">
-                  </button>
-                  <button name="edit_category" type="submit">
-                    <img src="images/save_24dp_5985E1_FILL1_wght400_GRAD0_opsz24.svg" alt="">
-                  </button>
-                </td>
-                </form>
-              </tr>
-            <?php endforeach; ?>
-          </tbody>
-        </table>
-      </div>
+
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8" style="width: calc(90vw - 260px);margin-left:30px;margin-top:30px;">
+      <form action="admin_dashboard.php" method="POST" class="bg-[#f9f4f0] p-6 rounded-lg shadow-md max-h-[400px] overflow-y-auto">
+        <h3 class="text-xl font-semibold text-[#4b3832] mb-4">Add Tags</h3>
+        <div class="mb-6">
+          <label for="tags" class="block text-sm font-medium text-[#4b3832] mb-2">Tags (comma-separated)</label>
+          <textarea
+            style="resize: none;"
+            id="tags"
+            name="tags_to_add"
+            rows="5"
+            class="w-full px-4 py-3 border border-[#d9c5b2] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#b8a090] focus:border-[#b8a090] text-[#4b3832] placeholder-[#7d5e4d]"
+            placeholder="Ex : JavaScript, Web Development, Tailwind"></textarea>
+        </div>
+        <div class="text-center">
+          <button
+            name="add_tags"
+            type="submit"
+            class="bg-[#4b3832] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#382c27] transition">
+            Add Tags
+          </button>
+        </div>
+      </form>
+
+      <form action="admin_dashboard.php" method="POST" class="bg-[#f9f4f0] p-6 rounded-lg shadow-md max-h-[400px] overflow-y-auto">
+        <h3 class="text-xl font-semibold text-[#4b3832] mb-4">Add Categories</h3>
+        <div class="mb-6">
+          <label for="categories" class="block text-sm font-medium text-[#4b3832] mb-2">Categories (comma-separated)</label>
+          <textarea
+            style="resize: none;"
+            id="categories"
+            name="categories_to_add"
+            rows="5"
+            class="w-full px-4 py-3 border border-[#d9c5b2] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#b8a090] focus:border-[#b8a090] text-[#4b3832] placeholder-[#7d5e4d]"
+            placeholder="Ex : Development, Design, Marketing"></textarea>
+        </div>
+        <div class="text-center">
+          <button
+            name="add-categories"
+            type="submit"
+            class="bg-[#4b3832] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#382c27] transition">
+            Add Categories
+          </button>
+        </div>
+      </form>
     </div>
   </div>
-</div>
-
-
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8" style="width: calc(90vw - 260px);margin-left:30px;margin-top:30px;">
-    <form action="admin_dashboard.php" method="POST" class="bg-[#f9f4f0] p-6 rounded-lg shadow-md max-h-[400px] overflow-y-auto">
-      <h3 class="text-xl font-semibold text-[#4b3832] mb-4">Add Tags</h3>
-      <div class="mb-6">
-        <label for="tags" class="block text-sm font-medium text-[#4b3832] mb-2">Tags (comma-separated)</label>
-        <textarea
-          style="resize: none;"
-          id="tags"
-          name="tags_to_add"
-          rows="5"
-          class="w-full px-4 py-3 border border-[#d9c5b2] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#b8a090] focus:border-[#b8a090] text-[#4b3832] placeholder-[#7d5e4d]"
-          placeholder="Ex : JavaScript, Web Development, Tailwind"></textarea>
-      </div>
-      <div class="text-center">
-        <button
-          name="add_tags"
-          type="submit"
-          class="bg-[#4b3832] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#382c27] transition">
-          Add Tags
-        </button>
-      </div>
-    </form>
-
-    <form action="admin_dashboard.php" method="POST" class="bg-[#f9f4f0] p-6 rounded-lg shadow-md max-h-[400px] overflow-y-auto">
-      <h3 class="text-xl font-semibold text-[#4b3832] mb-4">Add Categories</h3>
-      <div class="mb-6">
-        <label for="categories" class="block text-sm font-medium text-[#4b3832] mb-2">Categories (comma-separated)</label>
-        <textarea
-          style="resize: none;"
-          id="categories"
-          name="categories_to_add"
-          rows="5"
-          class="w-full px-4 py-3 border border-[#d9c5b2] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#b8a090] focus:border-[#b8a090] text-[#4b3832] placeholder-[#7d5e4d]"
-          placeholder="Ex : Development, Design, Marketing"></textarea>
-      </div>
-      <div class="text-center">
-        <button
-          name="add-categories"
-          type="submit"
-          class="bg-[#4b3832] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#382c27] transition">
-          Add Categories
-        </button>
-      </div>
-    </form>
-  </div>
-</div>
 
 
 

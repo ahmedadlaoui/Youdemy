@@ -60,7 +60,7 @@ create table courses(
 );
 -- @block   
 SELECT *
-FROM courses;
+FROM users;
 --@block
 create table library(
     course_id int not null,
@@ -71,3 +71,7 @@ create table library(
 
 --@block
 INSERT INTO library(course_id,user_id) VALUES(112,8);
+
+
+--@block
+

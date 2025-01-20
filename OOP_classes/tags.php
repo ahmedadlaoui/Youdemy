@@ -4,15 +4,10 @@ require_once 'OOP_classes/database_connection.php';
 
 class tags
 {
-
-    private $tag_id;
-    private $tag_title;
     private $conn;
 
-    public function __construct($tag_id, $tag_title)
+    public function __construct()
     {
-        $this->tag_id = $tag_id;
-        $this->tag_title = $tag_title;
         $db_instance = database_connection::getinstance();
         $this->conn  = $db_instance->getconnection();
     }
@@ -50,7 +45,7 @@ class tags
             header('location: admin_dashboard.php');
             exit();
         }catch(PDOException $e){
-        die('error inserting tags') . $e->getMessage();
+        die('error inserting tags'. $e->getMessage()) ;
         }
     }
 

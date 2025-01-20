@@ -2,7 +2,7 @@
 
 require 'teacher_actions.php';
 
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'teacher' ) {
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'teacher' || $_SESSION['is_active'] !== 1) {
   header('location: index.php');
   exit();
 }

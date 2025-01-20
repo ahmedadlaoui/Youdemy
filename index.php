@@ -205,7 +205,13 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['next'])){
 
               <form action="index.php" method="POST">
                 <input type="hidden" name="course_to_add" value="<?php echo $course['course_id'] ?>">
+                <?php 
+                if(isset($_SESSION['role']) && $_SESSION['role'] === 'student'):
+                ?> 
                 <button class="start-button" name="add_to_library">Start</button>
+                <?php 
+                endif;
+                ?>
               </form>
 
               <div class="strs flex items-center">

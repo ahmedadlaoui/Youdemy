@@ -63,7 +63,7 @@ class User
                 $_SESSION['is_active'] = $user['is_active'];
             }
         } catch (PDOException $e) {
-            die('error signing in') . $e->getMessage();
+            die('error signing in' . $e->getMessage());
         }
     }
     public static function log_out()

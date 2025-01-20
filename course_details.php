@@ -6,7 +6,7 @@ require 'OOP_classes/Course.php';
 
 $course_type = course::getcontent_type($_GET['course_id']);
 
-$mycourses = course::fetchstudent_courses($_SESSION['user_id']);
+$mycourses = course::fetchstudent_coursess($_SESSION['user_id']);
 
 $found = false; 
 foreach ($mycourses as $mycourse) {

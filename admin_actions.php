@@ -12,7 +12,9 @@ $users_instance = new User(null, null, null, null);
 $users = $users_instance->fetchusers();
 $admin_instance = new admin(null, null, null, null);
 
-$courses = course::fetchallcourses();
+
+$current_page = 1;
+$courses = course::fetchallcoursesindex($current_page);
 
 $topteacher = $admin_instance->topteacher();
 
@@ -80,4 +82,25 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_tag'])){
 
 if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['Delete_tag'])){
   $tagsinstance->Deletetag($_POST['tag_title_toedit'],$_POST['oldtag_title_toedit']);
+}
+
+
+$current_page = 1;
+
+if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['previous'])){
+  if($current_page > 1){
+    $current_page--;
+    $courses = course::fetchallcoursesindex($current_page);
+  }
+}
+
+
+if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['next'])){
+  if($current_page < count($courses)){
+    $current_page++;
+    $courses = course::fetchallcoursesindex($current_page);
+  }
+}
+if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['dlete_from_system'])){
+  course::deletecourse($_POST['course_to_delete']);
 }

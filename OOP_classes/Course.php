@@ -87,7 +87,8 @@ abstract class course
             $stmt->bindParam(':courseid', $course_id);
             $stmt->execute();
 
-            header('location: teacher_dashboard.php');
+            header('location: admin_dashboard.php');
+            exit();
         } catch (PDOException $e) {
             die('error deleting the course' . $e->getMessage());
         }
@@ -110,6 +111,21 @@ abstract class course
             $dbconn = database_connection::getinstance();
             $connection = $dbconn->getconnection();
             $stmt = $connection->prepare("SELECT * FROM library l  join courses c on l.course_id = c.course_id WHERE user_id = :user_id LIMIT $courses_limit,8 ");
+            $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+            $stmt->execute();
+            return  $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            die('error fetching your courses' . $e->getMessage());
+        }
+    }
+    
+    public static function fetchstudent_coursess($user_id)
+    {
+        try {
+
+            $dbconn = database_connection::getinstance();
+            $connection = $dbconn->getconnection();
+            $stmt = $connection->prepare("SELECT * FROM library l  join courses c on l.course_id = c.course_id WHERE user_id = :user_id  ");
             $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
             $stmt->execute();
             return  $stmt->fetchAll(PDO::FETCH_ASSOC);
